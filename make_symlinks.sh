@@ -33,7 +33,16 @@ for file in $files; do
 		echo "Backed up $file"
 		echo "Creating symlink to $file in $dir directory."
 		ln -s $dir/$file ~/$file
+	else
+		echo "Symlink for $file already exists."
 	fi
-	echo "Symlink for $file already exists."
 	echo "-------------------"
 done
+
+cat << EOF
+Requirements: Firefox, zsh
+Vim:
+- for vim-livedown, install npm install -g livedown
+- for vim-powerline, run install.sh in .vim/bundle/fonts
+- change terminal font to a powerline font
+EOF
