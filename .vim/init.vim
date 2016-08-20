@@ -1,1 +1,1 @@
-/home/tiago/.vimrc
+../.vimrc
