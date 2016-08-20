@@ -39,6 +39,9 @@ for file in $files; do
 	echo "-------------------"
 done
 
+echo "Downloading GRML .zshrc"
+wget -O ~/.zshrc https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc 
+
 cat << EOF
 Requirements: Firefox, zsh
 Vim:
