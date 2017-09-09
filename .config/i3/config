@@ -40,8 +40,9 @@ bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
 # bindsym $mod+d exec dmenu_run
-bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 425 opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" -font "System San Francisco Display 18"
+#bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 435 opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" -font "System San Francisco Display 18"
 #bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -b -nb '#303030' -sb '#101010' -sf '#16a085' -fn 'Terminus-11' -l 10"
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi -dmenu -i'
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
@@ -95,58 +96,114 @@ bindsym $mod+space focus mode_toggle
 # focus the parent container
 bindsym $mod+a focus parent
 
+bindsym $mod+u [urgent=latest] focus
+
 bindcode Mod1+49 scratchpad show
 bindcode Mod1+Shift+49 move to scratchpad
 
 # focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+Shift+d focus child
 workspace_auto_back_and_forth yes
 
-set $workspace1 "1: "
-set $workspace2 "2: "
-set $workspace3 "3: "
-set $workspace4 "4: "
-set $workspace10 "10: "
+set $workspace1 "1 "
+# Terminals
+set $workspace2 "2 "
+# Browser
+set $workspace3 "3 "
+# IM
+set $workspace4 "4 "
+# Mail
+set $workspace5 "5 "
+# Filemanager
+set $workspace6 "6 "
+# Video
+set $workspace7 "7 "
+# 
+set $workspace8 "8 "
+# Office
+set $workspace9 "9 "
+# Keepass
+set $workspace10 "10 "
+# Music
+set $workspace11 "11 "
+# Music
+set $workspace12 "12 "
+# Music
 
+set $left "HDMI1"
+set $middle "HDMI2"
+set $right "VGA1"
+
+workspace $workspace1 output $middle
+workspace $workspace2 output $left
+workspace $workspace3 output $left
+workspace $workspace4 output $middle
+workspace $workspace6 output $right
+workspace $workspace10 output $right
+
+bindsym $mod+m move workspace to output left
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
 bindsym $mod+2 workspace $workspace2
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
+bindsym $mod+5 workspace $workspace5
+bindsym $mod+6 workspace $workspace6
+bindsym $mod+7 workspace $workspace7
+bindsym $mod+8 workspace $workspace8
+bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
+bindsym $mod+ssharp workspace $workspace11
+bindsym $mod+dead_acute workspace $workspace12
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $workspace1
 bindsym $mod+Shift+2 move container to workspace $workspace2
 bindsym $mod+Shift+3 move container to workspace $workspace3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
+bindsym $mod+Shift+6 move container to workspace $workspace6
+bindsym $mod+Shift+7 move container to workspace $workspace7
+bindsym $mod+Shift+8 move container to workspace $workspace8
+bindsym $mod+Shift+9 move container to workspace $workspace9
 bindsym $mod+Shift+0 move container to workspace $workspace10
+bindsym $mod+Shift+ssharp move container to workspace $workspace11
+bindsym $mod+Shift+dead_acute move container to workspace $workspace12
 
 for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
-assign [class="X-terminal-emulator"] $workspace1
 assign [class="Google-chrome"] $workspace2
-assign [class="jetbrains-pycharm"] $workspace3
-assign [class="Thunar"] $workspace4
+assign [class="Firefox"] $workspace2
+assign [class="Terminator"] $workspace1
+assign [class="X-terminal-emulator"] $workspace1
+assign [class="Pidgin"] $workspace3
+assign [class="jetbrains-pycharm"] $workspace7
+assign [class="Thunderbird"] $workspace4
+assign [class="Thunar"] $workspace5
+assign [class="Pcmanfm"] $workspace5
+assign [class="Nemo"] $workspace5
+assign [class="Apache Directory Studio"] $workspace11
+assign [class="Wireshark-gtk"] $workspace11
+assign [class="Remmina"] $workspace12
+for_window [class="^https___hangouts_google_com_hangouts___.*"] move to workspace $workspace6
+for_window [class="^libreoffice.*"] move to workspace $workspace8
+assign [class="KeePass2"] $workspace9
+assign [class="KeePass.exe"] $workspace9
 # worked with Spotify 0.9
 assign [class="Spotify"] $workspace10 
 # works with Spotify 1.0.x
 for_window [class="Spotify"] move to workspace $workspace10 
+
+
+for_window [class="Terminator"] floating disable
+for_window [class="X-terminal-emulator"] floating disable
 for_window [class="Google-chrome"] border none
-for_window [instance=pavucontrol] floating enable
+for_window [instance=pavucontrol] floating enable, move scratchpad, scratchpad show
 for_window [instance="ncmpcpp"] move to scratchpad
+for_window [class="Zoiper"] floating disable, move scratchpad, scratchpad show
+
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -154,6 +211,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# texpander shortcut
+bindsym $mod+Shift+v exec "~/bin/texpander.sh"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -200,10 +259,10 @@ hide_edge_borders both
 # finds out, if available)
 bar {
 	position bottom
-	height 20
-	tray_output HDMI1
+#	height 20
+	tray_output HDMI2
 	font pango:Ohsnap 10, FontAwesome 10
-        status_command i3blocks -c /home/matze/.config/i3/i3blocks.conf
+        status_command i3blocks -c ~/.config/i3/i3blocks.conf
 	colors {
 		background $bg-color
 	    	separator #757575
@@ -241,8 +300,11 @@ exec --no-startup-id xautolock -time 5 -locker '~/.local/bin/fuzzy_lock.sh' &
 
 
 # Pulse Audio controls
+set $sink `pactl list short sinks | grep RUNNING | cut -f1`
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
+#bindcode 115 exec --no-startup-id pactl set-sink-volume $sink +5% #increase sound volume
+#bindcode 114 exec --no-startup-id pactl set-sink-volume $sink -5% #decrease sound volume
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
@@ -250,10 +312,24 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 # Touchpad controls
 bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
 
-exec compton -f
-exec --no-startup-id dropbox start
+#exec compton -f
+#exec --no-startup-id dropbox start
 exec --no-startup-id nm-applet
 exec --no-startup-id volumeicon
-# exec --no-startup-id gnome-settings-daemon
+exec --no-startup-id gnome-settings-daemon
 exec --no-startup-id blueman-applet
-exec --no-startup-id terminator -c ncmpcpp -x ncmpcpp
+#exec --no-startup-id terminator -c ncmpcpp -x ncmpcpp
+exec --no-startup-id pidgin
+#exec --no-startup-id google-chrome
+exec --no-startup-id firefox
+exec --no-startup-id thunderbird
+#exec --no-startup-id nagstamon
+exec --no-startup-id fluxgui
+#exec --no-startup-id indicator-stickynotes
+exec --no-startup-id synergy
+exec --no-startup-id keepass2
+
+exec --no-startup-id echo "$0: DESKTOP_AUTOSTART_ID $DESKTOP_AUTOSTART_ID, registering with org.gnome.SessionManager"
+exec --no-startup-id dbus-send --session --print-reply=literal --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.RegisterClient "string:i3" "string:$DESKTOP_AUTOSTART_ID"
+
+

@@ -10,7 +10,7 @@
 dir=~/git/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 #files="bashrc vimrc vim zshrc oh-my-zsh"    # list of files/folders to symlink in homedir
-files=".vimrc .vim"    # list of files/folders to symlink in homedir
+files=".vimrc .vim .config/i3 bin"    # list of files/folders to symlink in homedir
 
 ##########
 
@@ -39,8 +39,8 @@ for file in $files; do
 	echo "-------------------"
 done
 
-echo "Downloading GRML .zshrc"
-wget -O ~/.zshrc https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc 
+#echo "Downloading GRML .zshrc"
+#wget -O ~/.zshrc https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc 
 
 cat << EOF
 Requirements: Firefox, zsh
