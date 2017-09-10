@@ -10,7 +10,7 @@
 dir=~/git/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 #files="bashrc vimrc vim zshrc oh-my-zsh"    # list of files/folders to symlink in homedir
-files=".vimrc .vim .config/i3 bin"    # list of files/folders to symlink in homedir
+files=".vimrc .vim .config/i3 bin .Xresources"    # list of files/folders to symlink in homedir
 
 ##########
 
@@ -28,7 +28,7 @@ echo "...done"
 # create symlinks
 for file in $files; do
     if ! [ -L ~/$file ]; then
-		echo "Moving any existing dotfiles from ~ to $olddir"
+		echo "Backing up existing dotfile/folder from ~/$file to $olddir"
 		mv ~/$file ~/dotfiles_old/
 		echo "Backed up $file"
 		echo "Creating symlink to $file in $dir directory."
@@ -45,7 +45,9 @@ done
 cat << EOF
 Requirements: Firefox, zsh
 Vim:
+- $ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 - for vim-livedown, install npm install -g livedown
 - for vim-powerline, run install.sh in .vim/bundle/fonts
 - change terminal font to a powerline font
+- in vim :PluginInstall
 EOF

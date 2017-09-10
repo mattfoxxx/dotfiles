@@ -27,7 +27,43 @@
 "                ║           ⎋ HERE BE VIMPIRES ⎋           ║
 "                ╚══════════════════════════════════════════╝
 set shell=/bin/zsh "Sets the shell  
-"set nocompatible "Use the vim settings, not vi
+set nocompatible "Use the vim settings, not vi
+filetype off " required by vundle
+if ! executable( 'git' )
+    echohl ErrorMsg | echomsg 'Git is not available.' | echohl None
+else
+    " set the runtime path to include Vundle and initialize
+    set rtp+=~/.vim/bundle/Vundle.vim
+    call vundle#begin()
+    " alternatively, pass a path where Vundle should install plugins
+    "call vundle#begin('~/some/path/here')
+
+    " Initial setup for vundle
+    " $ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+    " let Vundle manage Vundle, required
+    Plugin 'VundleVim/Vundle.vim'
+
+    Plugin 'Yggdroot/indentLine.git'
+    Plugin 'scrooloose/nerdtree.git'
+    Plugin 'vim-airline/vim-airline.git'
+    Plugin 'vim-airline/vim-airline-themes.git'
+    Plugin 'bling/vim-bufferline.git'
+    Plugin 'ryanoasis/vim-devicons.git'
+    Plugin 'tpope/vim-fugitive.git'
+    Plugin 'tpope/vim-markdown.git'
+    Plugin 'airblade/vim-gitgutter.git'
+    Plugin 'severin-lemaignan/vim-minimap.git'
+    Plugin 'powerline/fonts.git'
+    Plugin 'shime/vim-livedown.git'
+    Plugin 'saltstack/salt-vim.git'
+	Plugin 'micha/vim-colors-solarized'
+    Plugin 'sickill/vim-monokai'
+    Plugin 'ctrlpvim/ctrlp.vim'
+
+    " All of your Plugins must be added before the following line
+    call vundle#end()            " required
+endif
+
 filetype plugin on "Enables the recognition files 
 filetype indent on
 set magic "Enable regular expressions
@@ -44,7 +80,10 @@ set shiftround          " be clever with tabs
 
 "Visual
 set background=dark     " we're using a dark bg
-colorscheme  monokai    " colorscheme from plugin 
+" :silent! colorscheme monokai    " colorscheme from plugin
+syntax on   "  Syntax highlighting
+let g:solarized_termcolors=256
+:silent! colorscheme solarized    " colorscheme from plugin
 set laststatus=2        " always show statusline
 set ruler   "Ruler breaks
 set wrap    "It allows navigation within a long line with j and k
@@ -55,7 +94,6 @@ set splitbelow " Split horizontal windows below to the current windows
 set splitright " Split vertical windows right to the current windows
 set fileformat=unix " Prefer Unix format
 set t_Co=256 " Enable 256 colors
-syntax on   "  Syntax highlighting
 set nolinebreak
 set number  "Show line numbers
 set relativenumber
@@ -71,11 +109,11 @@ hi TabLineFill ctermfg=White ctermbg=Yellow
 hi TabLine ctermfg=Blue ctermbg=Yellow
 
 "Visual Gui
-"set guifont=DroidSansMonoPLNerd:h12 
-"set guioptions-=m  "remove menu bar
-"set guioptions-=T  "remove toolbar
-"set guioptions-=r  "remove right-hand scroll bar
-"set guioptions-=L  "remove left-hand scroll bar
+" set guifont=DroidSansMonoPLNerd:h12 
+" set guioptions-=m  "remove menu bar
+" set guioptions-=T  "remove toolbar
+" set guioptions-=r  "remove right-hand scroll bar
+" set guioptions-=L  "remove left-hand scroll bar
 
 " Better copy & paste
 set pastetoggle=<F2>
@@ -125,8 +163,8 @@ let g:mapleader = ","
 
 "Shortcuts
 nmap <C-t> :tabnew<CR> 
-nmap <C-Up> :tabnext<CR>   
-nmap <C-Down> :tabprevious<CR> 
+nmap <C-PageUp> :tabnext<CR>   
+nmap <C-PageDown> :tabprevious<CR> 
 nmap <C-x> :tabclose<CR> 
 nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>  
 nmap <silent> <C-C> :silent noh<CR> 
@@ -159,8 +197,11 @@ nnoremap <C-q> :qa!<cr>
 
 " Plugins
 
-"Patogen
-execute pathogen#infect()
+" Pathogen
+runtime! autoload/pathogen.vim
+if exists("*pathogen#infect")
+    call pathogen#infect()
+endif
 
 " NerdTree {
           if isdirectory(expand("~/.vim/bundle/nerdtree"))
@@ -182,7 +223,7 @@ execute pathogen#infect()
 
                                     
 "Vim-airline
-let g:airline_theme = 'wombat'
+let g:airline_theme = 'luna'
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -191,6 +232,7 @@ let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
+"let g:airline_symbols.space = "\ua0"
 
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -268,25 +310,31 @@ let g:minimap_toggle='<leader>gt'
 " Vim-gitgutter
 let g:gitgutter_override_sign_column_highlight = 0
 highlight SignColumn ctermbg=237
-let g:gitgutter_sign_column_always = 1
+" let g:gitgutter_sign_column_always = 1
+set signcolumn=yes
 let g:gitgutter_sign_added = 'xx'
 let g:gitgutter_sign_modified = 'yy'
 let g:gitgutter_sign_removed = 'zz'
 let g:gitgutter_sign_removed_first_line = '^^'
 let g:gitgutter_sign_modified_removed = 'ww'
 
-" Vim-livedown
+" vim-livedown
+nmap gm :LivedownToggle<CR>
+
 " should markdown preview get shown automatically upon opening markdown buffer
 let g:livedown_autorun = 0
 
 " should the browser window pop-up upon previewing
-let g:livedown_open = 1 
+let g:livedown_open = 1
 
 " the port on which Livedown server will run
-let g:livedown_port = 1337
+let g:livedown_port = 11337
 
 " the system command to launch a browser (ex. on linux)
 let g:livedown_browser = "firefox"
+"let g:livedown_browser = "open /Applications/Firefox.app"
 
-nmap gm :LivedownToggle<CR>
-
+" nnoremap [1;5D B
+" nnoremap [1;5C W
+" set t_Co=256
+" set term=xterm-256color
