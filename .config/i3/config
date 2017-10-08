@@ -175,9 +175,11 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
 assign [class="Google-chrome"] $workspace2
+assign [class="Chromium"] $workspace2
 assign [class="Firefox"] $workspace2
 assign [class="Terminator"] $workspace1
 assign [class="X-terminal-emulator"] $workspace1
+assign [class="URxvt"] $workspace1
 assign [class="Pidgin"] $workspace3
 assign [class="jetbrains-pycharm"] $workspace7
 assign [class="Thunderbird"] $workspace4
@@ -200,6 +202,8 @@ for_window [class="Spotify"] move to workspace $workspace10
 for_window [class="Terminator"] floating disable
 for_window [class="X-terminal-emulator"] floating disable
 for_window [class="Google-chrome"] border none
+for_window [class="Chromium"] border none
+for_window [class="Firefox"] border none
 for_window [instance=pavucontrol] floating enable, move scratchpad, scratchpad show
 for_window [instance="ncmpcpp"] move to scratchpad
 for_window [class="Zoiper"] floating disable, move scratchpad, scratchpad show
@@ -240,11 +244,17 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-set $bg-color 	         #2f343f
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-set $inactive-text-color #676E7D
-set $urgent-bg-color     #E53935
+# set $bg-color 	         #2f343f
+# set $inactive-bg-color   #2f343f
+# set $text-color          #f3f4f5
+# set $inactive-text-color #676E7D
+# set $urgent-bg-color     #E53935
+
+set_from_resource $bg-color				color0	#2f343f
+set_from_resource $inactive-bg-color    color0	#2f343f
+set_from_resource $text-color           color7	#f3f4f5
+set_from_resource $inactive-text-color  color6	#676E7D
+set_from_resource $urgent-bg-color      color1	#E53935
 
 # window colors
 #                       border              	background         text                 indicator
@@ -257,21 +267,21 @@ hide_edge_borders both
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
-bar {
-	position bottom
-#	height 20
-	tray_output HDMI2
-	font pango:Ohsnap 10, FontAwesome 10
-        status_command i3blocks -c ~/.config/i3/i3blocks.conf
-	colors {
-		background $bg-color
-	    	separator #757575
-		#                  border             background         text
-		focused_workspace  $bg-color          $bg-color          $text-color
-		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
-		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-	}
-}
+# bar {
+# 	position bottom
+# #	height 20
+# 	tray_output LVDS-1
+# 	font pango:Ohsnap 10, FontAwesome 10
+#         status_command i3blocks -c ~/.config/i3/i3blocks.conf
+# 	colors {
+# 		background $bg-color
+# 	    	separator #757575
+# 		#                  border             background         text
+# 		focused_workspace  $bg-color          $bg-color          $text-color
+# 		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
+# 		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
+# 	}
+# }
 
 
 ################################################################
@@ -311,6 +321,8 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 20 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightness
 # Touchpad controls
 bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
+
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 #exec compton -f
 #exec --no-startup-id dropbox start
