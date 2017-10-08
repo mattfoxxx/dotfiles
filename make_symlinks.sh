@@ -10,7 +10,7 @@
 dir=~/git/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 #files="bashrc vimrc vim zshrc oh-my-zsh"    # list of files/folders to symlink in homedir
-files=".vimrc .vim .config/i3 bin .Xresources"    # list of files/folders to symlink in homedir
+files=".vimrc .vim bin .Xresources .config/i3 .config/polybar .config/libinput-gestures.conf"    # list of files/folders to symlink in homedir
 
 ##########
 
@@ -43,8 +43,17 @@ done
 #wget -O ~/.zshrc https://raw.githubusercontent.com/grml/grml-etc-core/master/etc/zsh/zshrc 
 
 cat << EOF
-Requirements: Firefox, zsh
+Install packages:
+- i3
+- urxvt
+- yaourt polybar
+- yaourt libinput-gestures:
+  - requires libinput 
+  - cp 30-touchpad.conf /etc/X11/xorg.conf.d/
+  - ln -s /usr/share/X11/xorg.conf.d/40-libinput.conf /etc/X11/xorg.conf.d/40-libinput.conf
+
 Vim:
+- Requirements: Firefox, zsh
 - $ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 - for vim-livedown, install npm install -g livedown
 - for vim-powerline, run install.sh in .vim/bundle/fonts
