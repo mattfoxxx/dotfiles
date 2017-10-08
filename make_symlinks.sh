@@ -45,7 +45,7 @@ done
 cat << EOF
 Install packages:
 - i3
-- urxvt
+- yaourt rxvt-unicode-better-wheel-scrolling
 - yaourt polybar
 - yaourt libinput-gestures:
   - requires libinput 
