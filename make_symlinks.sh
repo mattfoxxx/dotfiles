@@ -47,6 +47,7 @@ Install packages:
 - i3
 - yaourt rxvt-unicode-better-wheel-scrolling
 - yaourt polybar
+- yaourt siji-git
 - yaourt libinput-gestures:
   - requires libinput 
   - cp 30-touchpad.conf /etc/X11/xorg.conf.d/

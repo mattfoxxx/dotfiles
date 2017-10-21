@@ -147,6 +147,7 @@ urxvt*scrollstyle:        plain
 urxvt*scrollBar_right:    true
 urxvt*scrollColor:        #777777
 urxvt*cursorColor:        #ffcc00
+URxvt.cursorBlink:          true
 !is this a login shell?
 urxvt*loginShell:         true
 !set the TERM environment variable
