@@ -90,8 +90,8 @@
 ! yaourt powerline-fonts-git
 !urxvt*font:      -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
 !urxvt*boldFont:  -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
-URxvt.font:     xft:Ubuntu\ Mono\ derivative\ Powerline:size=13:antialias=true:hinting=true
-URxvt.boldFont: xft:Ubuntu\ Mono\ derivative\ Powerline:bold:size=13:antialias=true:hinting=true
+URxvt.font:     xft:Ubuntu\ Mono\ derivative\ Powerline:size=16:antialias=true:hinting=true
+URxvt.boldFont: xft:Ubuntu\ Mono\ derivative\ Powerline:bold:size=16:antialias=true:hinting=true
 !URxvt.font:     xft:Source\ Code\ Pro\ Medium:size=11:antialias=true:hinting=true
 !URxvt.boldFont: xft:Source\ Code\ Pro\ Medium:bold:size=11:antialias=true:hinting=true
 !URxvt.font:     xft:Inconsolata\ for\ Powerline:size=14:antialias=true:hinting=true
