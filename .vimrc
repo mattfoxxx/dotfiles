@@ -170,8 +170,8 @@ nnoremap <space> @=((foldclosed(line('.')) < 0) ? 'zc' : 'zo')<CR>
 nmap <silent> <C-C> :silent noh<CR> 
 inoremap <C-s> <esc>:w<cr>                 " save files
 nnoremap <C-s> :w<cr>
-inoremap <C-d> <esc>:wq!<cr>               " save and exit
-nnoremap <C-d> :wq!<cr>
+"inoremap <C-d> <esc>:wq!<cr>               " save and exit
+"nnoremap <C-d> :wq!<cr>
 inoremap <C-q> <esc>:qa!<cr>               " quit discarding changes
 nnoremap <C-q> :qa!<cr>
 
