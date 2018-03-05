@@ -223,7 +223,7 @@ endif
 
                                     
 "Vim-airline
-let g:airline_theme = 'luna'
+let g:airline_theme = 'minimalist'
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -232,7 +232,7 @@ let g:airline_powerline_fonts = 1
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
-"let g:airline_symbols.space = "\ua0"
+let g:airline_symbols.space = "\ua0"
 
 if !exists('g:airline_powerline_fonts')
   let g:airline#extensions#tabline#left_sep = ' '
@@ -263,6 +263,10 @@ else
   let g:airline_symbols.branch = ''
   let g:airline_symbols.readonly = ''
   let g:airline_symbols.linenr = ''
+  let g:airline_symbols.whitespace = 'Ξ'
+  let g:airline_symbols.paste     = 'ρ'
+  let g:airline_symbols.paste     = 'Þ'
+  let g:airline_symbols.paste     = '∥'
 endif
 
 

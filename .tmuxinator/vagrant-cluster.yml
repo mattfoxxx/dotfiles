@@ -1,0 +1,26 @@
+name: vagrant
+root: ~/git/saltstack
+windows:
+  - salt-master:
+      - vagrant ssh master
+      - sudo su -
+      - clear
+  - salt-minion-xenial:
+      - vagrant ssh xenial
+      - sudo su -
+      - clear
+  - salt-minion-xenial-cluster:
+      layout: horizontal
+      panes:
+        - xenial-cluster1:
+            - vagrant ssh xenial-cluster1
+            - sudo su -
+            - clear
+        - xenial-cluster2:
+            - vagrant ssh xenial-cluster2
+            - sudo su -
+            - clear
+        - xenial-cluster3:
+            - vagrant ssh xenial-cluster3
+            - sudo su -
+            - clear

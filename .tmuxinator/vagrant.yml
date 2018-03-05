@@ -1,0 +1,14 @@
+name: vagrant
+root: ~/git/saltstack
+windows:
+  - salt-master:
+      # layout: 20a0,274x83,0,0{137x83,0,0,3,136x83,138,0[136x41,138,0,5,136x41,138,42,6]}
+      panes:
+        # - clear
+        - vagrant ssh master
+        # - clear && emacs -nw
+  - salt-minion-xenial:
+      # layout: 24ab,274x83,0,0{137x83,0,0,3,136x83,138,0,4}
+      panes:
+        - vagrant ssh xenial
+
