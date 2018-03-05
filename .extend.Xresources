@@ -44,8 +44,8 @@
 
 *background:            S_base03
 *foreground:            S_base00
-*fading:                40
-*fadeColor:             S_base03
+!! *fading:                40
+!! *fadeColor:             S_base03
 *cursorColor:           S_base1
 *pointerColorBackground:S_base01
 *pointerColorForeground:S_base1
@@ -90,14 +90,16 @@
 ! yaourt powerline-fonts-git
 !urxvt*font:      -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
 !urxvt*boldFont:  -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
-URxvt.font:     xft:Ubuntu\ Mono\ derivative\ Powerline:size=16:antialias=true:hinting=true
-URxvt.boldFont: xft:Ubuntu\ Mono\ derivative\ Powerline:bold:size=16:antialias=true:hinting=true
-!URxvt.font:     xft:Source\ Code\ Pro\ Medium:size=11:antialias=true:hinting=true
-!URxvt.boldFont: xft:Source\ Code\ Pro\ Medium:bold:size=11:antialias=true:hinting=true
+!URxvt.font:     xft:Ubuntu\ Mono\ derivative\ Powerline:size=16:antialias=true:hinting=true
+!URxvt.boldFont: xft:Ubuntu\ Mono\ derivative\ Powerline:bold:size=16:antialias=true:hinting=true
+URxvt.font:     xft:Source Code Pro:style=medium:size=13:antialias=true:hinting=true
+URxvt.boldFont: xft:Source Code Pro:style=bold:size=13:antialias=true:hinting=true
+! URxvt.font:     xft:Droid Sans Mono for Powerline:size=14:antialias=true:hinting=true
+! URxvt.boldFont: xft:Droid Sans Mono for Powerline:bold:size=14:antialias=true:hinting=true
 !URxvt.font:     xft:Inconsolata\ for\ Powerline:size=14:antialias=true:hinting=true
 !URxvt.boldFont: xft:Inconsolata\ for\ Powerline:size=14:antialias=true:hinting=true
 !! Fix font space
-URxvt*letterSpace: -1
+URxvt*letterSpace: -2
 !initial size
 urxvt*geometry:           120x35
 !internal whitespace
@@ -136,7 +138,7 @@ urxvt*termName:           rxvt-unicode
 !enable pseudo-transparency (requires depth: 24 (see above))
 urxvt*inheritPixmap:      true
 !delimiters for double-click mouse selection
-urxvt*cutchars:           \()*,<>[]{}|
+urxvt*cutchars:           '\()*,<>[]{}|'
 !screen dump settings
 urxvt*print-pipe:         cat > $(echo urxvt.dump.$(date +'%Y%M%d%H%m%S'))
 !secondary screen scroll (default enabled)
@@ -157,6 +159,11 @@ urxvt*perl-ext-common:    default,matcher,resize-font
 urxvt*urlLauncher:        /usr/bin/firefox
 urxvt*matcher.button:     1
 !! END urlLauncher settings !!
+
+URxvt.keysym.Control-Up:   \033[1;5A
+URxvt.keysym.Control-Down:    \033[1;5B
+URxvt.keysym.Control-Left:    \033[1;5D
+URxvt.keysym.Control-Right:    \033[1;5C
 
 !transparent=0000 opaque=ffff
 !urxvt*background: rgba:1111/1111/1111/dddd
