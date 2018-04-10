@@ -79,7 +79,7 @@ set tabstop=4           " tab stop distance
 set shiftround          " be clever with tabs
 
 "Visual
-set background=dark     " we're using a dark bg
+set background=light     " we're using a dark bg
 " :silent! colorscheme monokai    " colorscheme from plugin
 syntax on   "  Syntax highlighting
 let g:solarized_termcolors=256

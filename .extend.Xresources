@@ -44,8 +44,8 @@
 
 *background:            S_base03
 *foreground:            S_base00
-!! *fading:                40
-!! *fadeColor:             S_base03
+*fading:                40
+*fadeColor:             S_base03
 *cursorColor:           S_base1
 *pointerColorBackground:S_base01
 *pointerColorForeground:S_base1
@@ -105,9 +105,9 @@ urxvt*geometry:           120x35
 !internal whitespace
 urxvt*internalBorder:     5
 !fade text n% upon unfocus
-urxvt*fading:             20
+! urxvt*fading:             20
 !darken=(0 to 100) lighten=(-1 to -100)
-urxvt*shading:            30
+urxvt*shading:            10
 !tint background with this color
 urxvt*tintColor:          black
 !set to 32-bit for real transparency (compositing required)
@@ -136,7 +136,7 @@ urxvt*loginShell:         true
 !set the TERM environment variable
 urxvt*termName:           rxvt-unicode
 !enable pseudo-transparency (requires depth: 24 (see above))
-urxvt*inheritPixmap:      true
+! urxvt*inheritPixmap:      true
 !delimiters for double-click mouse selection
 urxvt*cutchars:           '\()*,<>[]{}|'
 !screen dump settings

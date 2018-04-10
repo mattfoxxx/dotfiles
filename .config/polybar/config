@@ -51,7 +51,7 @@ font-2 = "Wuncon siji:pixelsize=16;1"
 font-3 = "FontAwesome:pixelsize=10;0"
 
 modules-left = i3
-modules-center = xwindow
+modules-center = xwindow mpd
 modules-right = xbacklight volume filesystem memory cpu wlan eth battery temperature date 
 
 tray-position = right
@@ -183,6 +183,11 @@ ws-icon-12 = 12;
 
 [module/mpd]
 type = internal/mpd
+
+host = 127.0.0.1
+port = 6600
+password = 
+
 format-online = <label-song>  <icon-prev> <icon-stop> <toggle> <icon-next>
 
 icon-prev = 
