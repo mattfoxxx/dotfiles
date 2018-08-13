@@ -1,0 +1,22 @@
+# This is the default filter chain
+[SpamFilter]
+[KillThreadsFilter]
+[ListMailsFilter]
+[SentMailsFilter]
+sent_tag = sent
+[ArchiveSentMailsFilter]
+[FolderNameFilter.0]
+folder_transforms = Entw&APw-rfe:draft Gesendet:sent INBOX:inbox Spam:spam "Alle Nachrichten":archive "[Gmail]":archive gmail:archive
+maildir_separator = /
+[InboxFilter]
+tags = -new
+
+
+#[MailMover]
+#folders = INBOX Spam
+#rename = True
+#max_age = 15
+#
+## rules
+#INBOX = 'tag:spam':Spam 'NOT tag:inbox':Archive
+#Spam = 'NOT tag:spam AND tag:inbox':INBOX 'NOT tag:spam':Archive

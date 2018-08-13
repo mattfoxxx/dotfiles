@@ -67,7 +67,10 @@ bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi -dmenu -i -th
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # launch categorized menu
-bindsym $mod+z exec --no-startup-id morc_menu
+bindsym $mod+Shift+z exec --no-startup-id morc_menu
+#bindsym $mod+z exec tdrop -ma termite
+bindsym $mod+z exec tdrop -ma termite
+for_window [class="termite"] fullscreen disable, floating enable border normal 1
 
 ################################################################################################
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
@@ -218,6 +221,7 @@ workspace $workspace6 output $right
 workspace $workspace10 output $right
 
 bindsym $mod+m move workspace to output left
+bindsym $mod+shift+m move workspace to output up
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1
@@ -269,6 +273,7 @@ assign [class="Terminator"] $workspace1
 assign [class="X-terminal-emulator"] $workspace1
 assign [class="URxvt"] $workspace1
 assign [class="Pidgin"] $workspace3
+assign [class="Slack"] $workspace3
 assign [class="jetbrains-pycharm"] $workspace7
 assign [class="Thunderbird"] $workspace4
 assign [class="Thunar"] $workspace5
@@ -284,6 +289,7 @@ assign [class="KeePass.exe"] $workspace9
 assign [class="Spotify"] $workspace10 
 # works with Spotify 1.0.x
 for_window [class="Spotify"] move to workspace $workspace10 
+for_window [class="Boostnote"] move to workspace $workspace10 
 
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
@@ -310,6 +316,7 @@ for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
 for_window [class="Simple-scan"] floating enable border normal
 for_window [class="(?i)System-config-printer.py"] floating enable border normal
 for_window [class="Skype"] floating enable border normal, move scratchpad
+for_window [class="media"] floating enable border normal, move scratchpad
 for_window [class="Thus"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
@@ -322,6 +329,7 @@ for_window [window_role="pop-up"] floating enable
 for_window [window_role="task_dialog"] floating enable
 
 for_window [class="^https___hangouts_google_com_hangouts___.*"] move to workspace $workspace6
+#for_window [class="jetbrains-pycharm"] move to workspace $workspace7
 for_window [class="^libreoffice.*"] move to workspace $workspace8
 for_window [class="Terminator"] floating disable
 for_window [class="TeamViewer"] floating enable
@@ -410,6 +418,7 @@ exec --no-startup-id thunderbird
 exec --no-startup-id keepassxc
 #exec --no-startup-id echo "$0: DESKTOP_AUTOSTART_ID $DESKTOP_AUTOSTART_ID, registering with org.gnome.SessionManager"
 #exec --no-startup-id dbus-send --session --print-reply=literal --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.RegisterClient "string:i3" "string:$DESKTOP_AUTOSTART_ID"
+exec --no-startup-id urxvt -name media -e mux start default
 
 
 # Autostart applications
@@ -515,7 +524,7 @@ set $i3_color17         #0c0c0c
 #}
 
 # hide/unhide i3status bar
-bindsym $mod+Shift+m bar mode toggle
+#bindsym $mod+Shift+m bar mode toggle
 
 # Theme colors
 # class                 border      backgr.     text        indic.      child_border

@@ -1,1 +1,9 @@
+*~
+*.gpg
 .vim/bundle/*
+.emacs.d/*
+!.emacs.d/init.el
+emacs-config/emacs-config.el
+.notmuch/*
+!.notmuch/hooks/post-new
+

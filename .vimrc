@@ -58,7 +58,10 @@ else
     Plugin 'saltstack/salt-vim.git'
 	Plugin 'micha/vim-colors-solarized'
     Plugin 'sickill/vim-monokai'
-    Plugin 'ctrlpvim/ctrlp.vim'
+    "Plugin 'ctrlpvim/ctrlp.vim'
+	Plugin 'junegunn/fzf'
+	Plugin 'junegunn/fzf.vim'
+	Plugin 'hzchirs/vim-material'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -79,11 +82,13 @@ set tabstop=4           " tab stop distance
 set shiftround          " be clever with tabs
 
 "Visual
-set background=light     " we're using a dark bg
+"set background=light     " we're using a dark bg
+set background=dark     " we're using a dark bg
 " :silent! colorscheme monokai    " colorscheme from plugin
-syntax on   "  Syntax highlighting
 let g:solarized_termcolors=256
-:silent! colorscheme solarized    " colorscheme from plugin
+" :silent! colorscheme solarized    " colorscheme from plugin
+:silent! colorscheme vim-material    " colorscheme from plugin
+syntax on   "  Syntax highlighting
 set laststatus=2        " always show statusline
 set ruler   "Ruler breaks
 set wrap    "It allows navigation within a long line with j and k
@@ -223,7 +228,8 @@ endif
 
                                     
 "Vim-airline
-let g:airline_theme = 'minimalist'
+" let g:airline_theme = 'minimalist'
+let g:airline_theme = 'material'
 let g:airline#extensions#syntastic#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#tabline#enabled = 1
@@ -342,3 +348,4 @@ let g:livedown_browser = "firefox"
 " nnoremap [1;5C W
 " set t_Co=256
 " set term=xterm-256color
+:command! -nargs=1 -range SuperRetab <line1>,<line2>s/\v%(^ *)@<= {<args>}/\t/g
