@@ -30,27 +30,3 @@
   (package-install 'use-package))
 
 (org-babel-load-file "~/git/dotfiles/emacs-config/emacs-config.org")
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(elpy-rpc-python-command "python3")
- '(notmuch-saved-searches
-   (quote
-    ((:name "inbox" :query "tag:Inbox" :key "i" :sort-order newest-first)
-     (:name "unread" :query "tag:unread" :key "u" :sort-order newest-first)
-     (:name "flagged" :query "tag:flagged" :key "f")
-     (:name "sent" :query "tag:sent" :key "t")
-     (:name "drafts" :query "tag:draft" :key "d")
-     (:name "all mail" :query "*" :key "a" :sort-order newest-first))))
- '(package-selected-packages
-   (quote
-    (magit projectile powerline-evil docker-compose-mode docker-tramp dockerfile-mode helm-swoop rjsx-mode elpy evil)))
- '(python-shell-interpreter "python3"))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
