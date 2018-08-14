@@ -8,7 +8,7 @@ This is my emacs config file in org mode
    (setq evil-search-module 'evil-search)
    (setq evil-ex-complete-emacs-commands nil)
    (setq evil-vsplit-window-right t)
-   (setq evil-split-window-below t)
+   (il-split-window-below t)
    :config
    (evil-mode))
 #+END_SRC
@@ -229,21 +229,22 @@ This is my emacs config file in org mode
 #+END_SRC
 * Projectile
 #+BEGIN_SRC emacs-lisp
-(use-package projectile
-  :ensure t
-  :diminish projectile-mode
-  :commands projectile-ag
-  :init (projectile-global-mode 1)
-  :config
-  (setq projectile-completion-system 'ido
-  projectile-project-search-path '("~/git/" "~/Dokumente/")))
+  (use-package projectile
+    :ensure t
+  ;;  :diminish projectile-mode
+  ;;  :commands projectile-ag
+  ;;  :init (projectile-global-mode +1)
+    :config
+    (projectile-global-mode +1)
+    (setq projectile-completion-system 'ido
+    projectile-project-search-path '("~/git/" "~/Documents/"))
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-
-;;(use-package counsel-projectile
-;;  :ensure t
-;;  :config
-;;  (counsel-projectile-on))
+  ;;(use-package counsel-projectile(projectile-global-mode +1)
+  ;;  :ensure t
+  ;;  :config
+  ;;  (counsel-projectile-on))
 #+END_SRC
 * Which-key
   Add which-key.el to your =load-path= and require. Something like
@@ -275,4 +276,12 @@ This is my emacs config file in org mode
 
   :bind ("C-x g" . magit-status))
 
+#+END_SRC
+* IDO
+#+BEGIN_SRC emacs-lisp
+(use-package ido
+  :config
+  (setq ido-enable-flex-matching t)
+  (ido-everywhere t)
+  (ido-mode 1))
 #+END_SRC
