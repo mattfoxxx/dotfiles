@@ -92,8 +92,8 @@
 !urxvt*boldFont:  -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
 !URxvt.font:     xft:Ubuntu\ Mono\ derivative\ Powerline:size=16:antialias=true:hinting=true
 !URxvt.boldFont: xft:Ubuntu\ Mono\ derivative\ Powerline:bold:size=16:antialias=true:hinting=true
-URxvt.font:     xft:Source Code Pro:style=medium:size=13:antialias=true:hinting=true
-URxvt.boldFont: xft:Source Code Pro:style=bold:size=13:antialias=true:hinting=true
+URxvt.font:     xft:Source Code Pro for Powerline:style=medium:size=13:antialias=true:hinting=true, xft:FontAwesome:size=9, xft:FontAwesome:size=9
+URxvt.boldFont: xft:Source Code Pro for Powerline:style=bold:size=13:antialias=true:hinting=true, xft:FontAwesome:size=9, xft:FontAwesome:size=9
 ! URxvt.font:     xft:Droid Sans Mono for Powerline:size=14:antialias=true:hinting=true
 ! URxvt.boldFont: xft:Droid Sans Mono for Powerline:bold:size=14:antialias=true:hinting=true
 !URxvt.font:     xft:Inconsolata\ for\ Powerline:size=14:antialias=true:hinting=true
