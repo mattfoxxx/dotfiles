@@ -1,0 +1,73 @@
+// vim:ts=4:sw=4:et
+{
+    // this is a manually added container to restore the vertical split
+    "layout": "splitv",
+    "percent": 0.5,
+    "type": "con",
+    "nodes": [
+
+{
+    "border": "pixel",
+    "current_border_width": 1,
+    "floating": "auto_off",
+    "name": "Buddy-Liste",
+    "percent": 0.2,
+    "swallows": [
+       {
+       "class": "^Pidgin$",
+       "instance": "^Pidgin$",
+       // "title": "^Buddy\\-Liste$",
+       // "transient_for": "^$",
+       "window_role": "^buddy_list$"
+       }
+    ],
+    "type": "con"
+}
+
+{
+    // tabbed split container with 2 children
+    "border": "pixel",
+    "floating": "auto_off",
+    "layout": "tabbed",
+    "percent": 0.8,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "pixel",
+            "current_border_width": 1,
+            "floating": "auto_off",
+            "name": "Admin",
+            "percent": 0.5,
+            "swallows": [
+               {
+               "class": "^Pidgin$",
+               "instance": "^Pidgin$",
+               // "title": "^Admin$",
+               // "transient_for": "^$",
+               "window_role": "^conversation$"
+               }
+            ],
+            "type": "con"
+        },
+        {
+            "border": "pixel",
+            "current_border_width": 1,
+            "floating": "auto_off",
+            "name": "Slack - SilverTours",
+            "percent": 0.5,
+            "swallows": [
+               {
+               "class": "^Slack$",
+               "instance": "^slack$",
+               // "title": "^Slack\\ \\-\\ SilverTours$",
+               // "transient_for": "^$",
+               // "window_role": "^browser\\-window$"
+               }
+            ],
+            "type": "con"
+        }
+    ]
+}
+
+]
+}

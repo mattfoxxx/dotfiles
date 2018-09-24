@@ -7,4 +7,4 @@
 emacs-config/emacs-config.el
 .notmuch/*
 !.notmuch/hooks/post-new
-
+afew.log

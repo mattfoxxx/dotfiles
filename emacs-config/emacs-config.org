@@ -1,190 +1,226 @@
 This is my emacs config file in org mode
 
+Stolen from:
+- https://github.com/kirang89/.emacs.d
+- ...and others
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+    :ensure t
+    :config
+    (load-theme 'zenburn t))
+
+#+END_SRC
 * Evil mode
 #+BEGIN_SRC emacs-lisp
 
-(use-package evil
-   :ensure t
-   :init
-   (setq evil-search-module 'evil-search)
-   (setq evil-ex-complete-emacs-commands nil)
-   (setq evil-vsplit-window-right t)
-   (il-split-window-below t)
-   :config
-   (evil-mode))
-#+END_SRC
-
-* Org mode
-#+BEGIN_SRC emacs-lisp
-(use-package org-bullets
-   :ensure t
-   :init (add-hook 'org-mode-hook 'org-bullets-mode))
-(use-package org
-  :ensure t        ; But it comes with Emacs now!?
-  :init
-  (setq org-use-speed-commands t
-        org-return-follows-link t
-        org-hide-emphasis-markers t
-        org-completion-use-ido t
-        org-outline-path-complete-in-steps nil
-        org-src-fontify-natively t   ;; Pretty code blocks
-        org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil
-        org-todo-keywords '((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)")
-                            (sequence "|" "CANCELED(c)")))
-  (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
-  (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
-  (add-hook 'org-mode-hook 'yas-minor-mode-on)
-  :bind (("C-c l" . org-store-link)
-         ("C-c c" . org-capture)
-         ("C-M-|" . indent-rigidly))
-  :config
-  (font-lock-add-keywords            ; A bit silly but my headers are now
-   'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
-                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
-                          nil)))
-               ("^\\*+ \\(DOING\\) "
-                (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
-                          nil)))
-               ("^\\*+ \\(CANCELED\\) "
-                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
-                          nil)))
-               ("^\\*+ \\(DONE\\) "
-                (1 (progn (compose-region (match-beginning 1) (match-end 1) "✔")
-                          nil)))))
-
-  (define-key org-mode-map (kbd "M-C-n") 'org-end-of-item-list)
-  (define-key org-mode-map (kbd "M-C-p") 'org-beginning-of-item-list)
-  (define-key org-mode-map (kbd "M-C-u") 'outline-up-heading)
-  (define-key org-mode-map (kbd "M-C-w") 'org-table-copy-region)
-  (define-key org-mode-map (kbd "M-C-y") 'org-table-paste-rectangle)
-
-  (define-key org-mode-map [remap org-return] (lambda () (interactive)
-                                                (if (org-in-src-block-p)
-                                                    (org-return)
-                                                  (org-return-indent)))))
-#+END_SRC
-* Powerline
-#+BEGIN_SRC emacs-lisp
-(use-package powerline
-   :ensure t
-   :init
-(powerline-default-theme))
-#+END_SRC
-
-* Notmuch
-#+BEGIN_SRC emacs-lisp
-	(use-package notmuch
-	   :ensure t
-	   :bind (("C-. m" . notmuch)
-		 :map notmuch-search-mode-map
-		 ;; bind 'r' to reply-all, and 'R' to reply
-		 ("r" . notmuch-search-reply-to-thread)
-		 ("R" . notmuch-search-reply-to-thread-sender)
-		 :map notmuch-show-mode-map 
-                 ("U" . browse-url-at-point)))
-#+END_SRC
-
-* Markdown-mode
-#+BEGIN_SRC emacs-lisp
-(autoload 'markdown-mode "markdown-mode.el"
-   "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-   (cons '("\.md" . markdown-mode) auto-mode-alist))
-
-#+END_SRC
-
-* Custom variables
-#+BEGIN_SRC emacs-lisp
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(elpy-rpc-python-command "python3")
- '(notmuch-saved-searches
-   (quote
-    ((:name "inbox" :query "tag:Inbox" :key "i" :sort-order newest-first)
-     (:name "unread" :query "tag:unread" :key "u" :sort-order newest-first)
-     (:name "flagged" :query "tag:flagged" :key "f")
-     (:name "sent" :query "tag:sent" :key "t")
-     (:name "drafts" :query "tag:draft" :key "d")
-     (:name "all mail" :query "*" :key "a" :sort-order newest-first))))
- '(package-selected-packages
-   (quote
-    (powerline-evil docker-compose-mode docker-tramp dockerfile-mode helm-swoop rjsx-mode elpy evil)))
- '(python-shell-interpreter "python3"))
-#+END_SRC
-
-* Faces
-#+BEGIN_SRC emacs-lisp
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-#+END_SRC
-
-* Elpy
-#+BEGIN_SRC emacs-lisp
-(use-package elpy
+  (use-package evil
+     :ensure t
+     :init
+     (setq evil-search-module 'evil-search)
+     (setq evil-ex-complete-emacs-commands nil)
+     (setq evil-vsplit-window-right t)
+     (setq evil-want-integration nil)
+     ;;(split-window-below t)
+     :config
+     (evil-mode 1))
+  (use-package evil-collection
+    :after evil
     :ensure t
     :config
-    (elpy-enable))
+    (evil-collection-init))
 #+END_SRC
+* Neotree
+  https://www.emacswiki.org/emacs/NeoTree#toc12
+  #+BEGIN_SRC emacs-lisp
+    (use-package neotree
+      :ensure t
+      :bind (("<f2>" . neotree-toggle))
+      :defer
+      :config
+        (evil-set-initial-state 'neotree-mode 'normal)
+        (evil-define-key 'normal neotree-mode-map
+          (kbd "RET") 'neotree-enter
+          (kbd "c")   'neotree-create-node
+          (kbd "r")   'neotree-rename-node
+          (kbd "d")   'neotree-delete-node
+          (kbd "j")   'neotree-next-node
+          (kbd "k")   'neotree-previous-node
+          (kbd "g")   'neotree-refresh
+          (kbd "C")   'neotree-change-root
+          (kbd "I")   'neotree-hidden-file-toggle
+          (kbd "H")   'neotree-hidden-file-toggle
+          (kbd "q")   'neotree-hide
+          (kbd "l")   'neotree-enter
+    ))
+  
+  #+END_SRC
+* Calffw
+  #+BEGIN_SRC emacs-lisp
+      (use-package calfw-org
+      :ensure t)
+      (use-package calfw-ical
+      :ensure t)
+      (use-package calfw
+      :ensure ;TODO: 
+      :config
+      (require 'calfw) 
+      (require 'calfw-org)
+      (setq cfw:org-overwrite-default-keybinding t)
+      (require 'calfw-ical)
 
-* Company-mode
-#+BEGIN_SRC emacs-lisp
-;;(require 'company)
-;;;; keybindings
-;;(define-key company-active-map (kbd "C-n") 'company-selet-next)
-;;(define-key company-active-map (kbd "C-p") 'company-selet-previous)
-#+END_SRC
+      (defun mycalendar ()
+        (interactive)
+        (cfw:open-calendar-buffer
+         :contents-sources
+         (list
+          ;; (cfw:org-create-source "Green")  ; orgmode source
+          (cfw:ical-create-source "mintert" "https://calendar.google.com/calendar/ical/mintert%40billiger-mietwagen.de/private-159d28e951e64add209fd7e94c490624/basic.ics" "Green") ; my calender
+          (cfw:ical-create-source "admin" "https://calendar.google.com/calendar/ical/billiger-mietwagen.de_6r17pkmda8beg5cj75mig8v47s%40group.calendar.google.com/private-e2ce65fa126e3801d1eba9f32ac59981/basic.ics" "IndianRed") ; google calendar admin
+          ))) 
+      (setq cfw:org-overwrite-default-keybinding t))
 
-* Global key bindings
+    (use-package calfw-gcal
+            :ensure t
+            :config
+            (require 'calfw-gcal))
+  
+  #+END_SRC
+* Epa File
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-i") 'helm-swoop)
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-x r b") 'helm-bookmarks)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-#+END_SRC
-
-* Helm
-#+BEGIN_SRC emacs-lisp
-(use-package helm
-  :ensure t
-;;  :bind (("M-a" . helm-M-x)
-;;         ("C-x C-f" . helm-find-files)
-;;         ("C-x f" . helm-recentf)
-;;         ("C-SPC" . helm-dabbrev)
-;;         ("M-y" . helm-show-kill-ring)
-;;         ("C-x b" . helm-buffers-list))
-;;  :bind (:map helm-map
-;;	      ("M-i" . helm-previous-line)
-;;	      ("M-k" . helm-next-line)
-;;	      ("M-I" . helm-previous-page)
-;;	      ("M-K" . helm-next-page)
-;;	      ("M-h" . helm-beginning-of-buffer)
-;;	      ("M-H" . helm-end-of-buffer))
-  :config (progn
-	    (setq helm-buffers-fuzzy-matching t)
-            (helm-mode 1)))
-#+END_SRC
-
-* Dockerfile
-#+BEGIN_SRC emacs-lisp
-(use-package docker-compose-mode
-  :ensure t)
-(use-package dockerfile-mode
-  :ensure t
+(use-package epa-file
+  ;;:ensure t
+  :commands epa-file-enable
+  :init (epa-file-enable)
   :config
-  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+  (epa-file-enable))
+
 #+END_SRC
 
+* Netrc
+#+BEGIN_SRC emacs-lisp
+(use-package netrc
+  :ensure t)
+
+(defun get-authinfo-pass (host port)
+ (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+        (hostentry (netrc-machine netrc host port port)))
+  (when hostentry (netrc-get hostentry "password"))))
+
+(defun get-authinfo-login (host port)
+ (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+        (hostentry (netrc-machine netrc host port port)))
+  (when hostentry (netrc-get hostentry "login"))))
+
+;;(setq org-gcal-client-id <gcal-client-id>
+;;      org-gcal-client-secret (get-authinfo "gcal.api" "9999")
+;;      org-gcal-file-alist '(...))
+
+#+END_SRC    
+* Org mode
+#+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+       :ensure t
+       :init (add-hook 'org-mode-hook 'org-bullets-mode))
+    (use-package org-jira
+       :ensure t
+       :init (setq jiralib-url "https://jira.i.silvertours.net"))
+    (use-package org
+      :ensure t        ; But it comes with Emacs now!?
+      :init
+      (setq org-use-speed-commands t
+            org-return-follows-link t
+            org-hide-emphasis-markers t
+            org-completion-use-ido t
+            org-outline-path-complete-in-steps nil
+            org-src-fontify-natively t   ;; Pretty code blocks
+            org-src-tab-acts-natively t
+            org-confirm-babel-evaluate nil
+            org-todo-keywords '((sequence "TODO(t)" "DOING(g)" "|" "DONE(d)")
+                                (sequence "|" "CANCELED(c)")))
+      (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
+      (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
+      (add-hook 'org-mode-hook 'yas-minor-mode-on)
+      :bind (("C-c l" . org-store-link)
+             ("C-c c" . org-capture)
+             ("C-c a" . org-agenda)
+             ("C-M-|" . indent-rigidly))
+      :config
+      (font-lock-add-keywords            ; A bit silly but my headers are now
+       'org-mode `(("^\\*+ \\(TODO\\) "  ; shorter, and that is nice canceled
+                    (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚑")
+                              nil)))
+                   ("^\\*+ \\(DOING\\) "
+                    (1 (progn (compose-region (match-beginning 1) (match-end 1) "⚐")
+                              nil)))
+                   ("^\\*+ \\(CANCELED\\) "
+                    (1 (progn (compose-region (match-beginning 1) (match-end 1) "✘")
+                              nil)))
+                   ("^\\*+ \\(DONE\\) "
+                    (1 (progn (compose-region (match-beginning 1) (match-end 1) "✔")
+                              nil)))))
+
+      (setq org-agenda-files (list "~/Dropbox/org-mode/gcal.org"
+                               "~/Dropbox/org-mode/i.org"
+                               "~/Dropbox/org-mode/schedule.org"
+                               "~/Dropbox/org-mode/todo.org"
+                               "~/Dropbox/org-mode/work.org"))
+
+      (setq org-capture-templates
+        '(("a" "Appointments" entry (file  "~/Dropbox/org-mode/gcal.org" )
+           "* TODO %?\n:PROPERTIES:\n\n:END:\n:DEADLINE: %^T \n %i\n")
+          ("l" "Link" entry (file+headline "~/Dropbox/org-mode/links.org" "Links")
+           "* %? %^L %^g \n%T" :prepend t)
+          ("b" "Blog idea" entry (file+headline "~/Dropbox/org-mode/i.org" "Blog Topics:")
+           "* %?\n%T" :prepend t)
+          ("t" "Personal Task" entry (file+headline "~/Dropbox/org-mode/todo.org" "To Do")
+           "* TODO %?\n%u" :prepend t)
+          ("w" "Work Task" entry (file+headline "~/Dropbox/org-mode/work.org" "To Do")
+           "* TODO %?\n%u" :prepend t)
+          ("n" "Note" entry (file+headline "~/Dropbox/org-mode/i.org" "Note space")
+           "* %?\n%u" :prepend t)
+          ("j" "Journal" entry (file+datetree "~/Dropbox/org-mode/journal.org")
+           "* %?\nEntered on %U\n  %i\n  %a")
+          ("s" "Screencast" entry (file "~/Dropbox/org-mode/screencastnotes.org")
+           "* %?\n%i\n")))
+
+  (if (file-exists-p org-clock-persist-file)
+      ;; (setq org-clock-persist 'history)
+      (org-clock-persistence-insinuate)
+    (shell-command (concat "touch " org-clock-persist-file)))
+
+      (define-key org-mode-map (kbd "M-C-n") 'org-end-of-item-list)
+      (define-key org-mode-map (kbd "M-C-p") 'org-beginning-of-item-list)
+      (define-key org-mode-map (kbd "M-C-u") 'outline-up-heading)
+      (define-key org-mode-map (kbd "M-C-w") 'org-table-copy-region)
+      (define-key org-mode-map (kbd "M-C-y") 'org-table-paste-rectangle)
+
+      (define-key org-mode-map [remap org-return] (lambda () (interactive)
+                                                    (if (org-in-src-block-p)
+                                                        (org-return)
+                                                      (org-return-indent)))))
+#+END_SRC
+
+* Org-gcal
+#+BEGIN_SRC emacs-lisp
+  (use-package org-gcal
+    :ensure t
+    :config
+    (setq org-gcal-client-id (get-authinfo-login "gcal.api" "9999")
+	  org-gcal-client-secret (get-authinfo-pass "gcal.api" "9999")
+          org-gcal-file-alist '(("mintert@billiger-mietwagen.de" . "~/Dropbox/org-mode/gcal.org")))
+    (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) ))
+    (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) )))
+
+#+END_SRC
 * Mail
+** Mail - gnus-alias
+   #+BEGIN_SRC emacs-lisp
+     (use-package gnus-alias
+       :ensure t)
+
+   #+END_SRC
 ** Mail - signature switching
 #+BEGIN_SRC emacs-lisp 
  ;; Define two identities, "home" and "work"
@@ -200,7 +236,7 @@ This is my emacs config file in org mode
               nil
               "Matthias Mintert <mintert@billiger-mietwagen.de>"
               "SilverTours GmbH"
-              nil
+              (("Fcc" . "gmail/[Gmail]/Gesendet"))
               nil
               "~/.signature")))
      ;; Use "home" identity by default
@@ -228,24 +264,283 @@ This is my emacs config file in org mode
 ;; Sign messages by default.
     (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
 #+END_SRC
+** Notmuch
+ #+BEGIN_SRC emacs-lisp
+   (use-package popwin
+      :ensure t
+      :config
+      (popwin-mode 1))
+   (use-package notmuch
+      :ensure t
+      :init
+      (setq message-kill-buffer-on-exit t)
+      :bind (("C-c m" . notmuch)
+           :map notmuch-search-mode-map
+           ;; bind 'r' to reply-all, and 'R' to reply
+           ("r" . notmuch-search-reply-to-thread)
+           ("R" . notmuch-search-reply-to-thread-sender)
+           :map notmuch-show-mode-map 
+           ("U" . browse-url-at-point))
+      :config 
+       (require 'org-notmuch))
+
+       (defun notmuch-exec-mbsync ()
+           "execute mbsync"
+           (interactive)
+           (set-process-sentinel
+               (start-process-shell-command "notmuch"
+                                           "*mbsync*"
+                                           "mbsync -Va && notmuch new")
+           '(lambda (process event)
+               (notmuch-refresh-all-buffers)
+               (let ((w (get-buffer-window "*mbsync*")))
+                   (when w
+                   (with-selected-window w (recenter (window-end)))))))
+           (popwin:display-buffer "*mbsync*"))
+
+       (add-to-list 'popwin:special-display-config
+                   '("*mbsync*" :dedicated t :position bottom :stick t
+                       :height 0.4 :noselect t))
+ #+END_SRC
+
+* Powerline
+#+BEGIN_SRC emacs-lisp
+(use-package powerline
+   :ensure t
+   :init
+(powerline-default-theme))
+#+END_SRC
+
+* Markdown-mode
+#+BEGIN_SRC emacs-lisp
+(autoload 'markdown-mode "markdown-mode.el"
+   "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+   (cons '("\.md" . markdown-mode) auto-mode-alist))
+
+#+END_SRC
+
+* Custom variables
+#+BEGIN_SRC emacs-lisp
+(setq custom-file "~/git/dotfiles/emacs-config/custom.el")
+(load custom-file)
+#+END_SRC
+
+* Line Numbers
+#+BEGIN_SRC emacs-lisp
+(defun turn-on-line-number ()
+  "Turn on line number on margin."
+  (linum-mode 1))
+  ;;(setq linum-format "%4d \u2502 ")
+
+(dolist (hook '(python-mode-hook))
+  (add-hook hook 'turn-on-line-number))
+#+END_SRC
+* Faces
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+#+END_SRC
+
+* Company-mode
+#+BEGIN_SRC emacs-lisp
+    (use-package company
+    :ensure t
+    :bind (
+      ("C-n" . company-select-next)
+      ("C-p" . company-select-previous))
+    :config
+    (add-hook 'after-init-hook 'global-company-mode)
+    (setq company-tooltip-limit 10)
+    (setq company-dabbrev-downcase 0)
+    (setq company-idle-delay 0)
+    (setq company-echo-delay 0)
+    (setq company-minimum-prefix-length 2)
+    (setq company-require-match nil)
+    (setq company-selection-wrap-around t)
+    (setq company-tooltip-align-annotations t)
+    ;; (setq company-tooltip-flip-when-above t)
+    (setq company-transformers '(company-sort-by-occurrence)) ; weight by frequency
+    )
+
+    ;;  (require 'company)
+    ;;  ;; keybindings
+    ;;  (define-key company-active-map (kbd "C-n") 'company-selet-next)
+    ;;  (define-key company-active-map (kbd "C-p") 'company-selet-previous)
+
+  ;; =======================
+  ;; Adding company backends
+  ;; =======================
+
+  ;; Python auto completion
+  (use-package company-jedi
+    :defer t
+    :init
+    (setq company-jedi-python-bin "python")
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+
+  ;; HTML completion
+  (use-package company-web
+    :ensure t
+    :bind (("C-c w" . company-web-html))
+    :config
+    (add-to-list 'company-backends 'company-web-html))
+
+  (use-package company-statistics
+    :ensure t
+    :config
+    (add-hook 'after-init-hook 'company-statistics-mode))
+#+END_SRC
+
+* Global key bindings
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-i") 'helm-swoop)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+(global-set-key (kbd "C-x r b") 'helm-bookmarks)
+(global-set-key (kbd "C-x m") 'helm-M-x)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+#+END_SRC
+
+* Helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :diminish helm-mode
+    :init
+    ;; Make Helm look nice.
+    (setq-default helm-M-x-fuzzy-match t
+                  helm-buffers-fuzzy-matching t
+                  helm-recentf-fuzzy-match t
+                  helm-apropos-fuzzy-match t
+                  ;; open Helm window in the current window where point is in
+                  helm-split-window-in-side-p t
+                  helm-ff-ido-style-backspace 'always)
+
+    ;;(set-face-attribute 'helm-source-header nil :height 0.75)
+
+    ;; Replace common selectors with Helm versions.
+    ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+    (global-set-key (kbd "C-x C-f") #'helm-find-files)
+    (global-set-key (kbd "C-x b") #'helm-mini)
+    (global-set-key (kbd "M-x") #'helm-M-x)
+    (global-set-key (kbd "M-y") #'helm-show-kill-ring)
+    (global-set-key (kbd "C-x C-r") #'helm-recentf)
+    (global-set-key (kbd "C-x C-o") #'helm-occur)
+    (global-set-key (kbd "C-c C-s") #'helm-do-grep-ag)
+
+    :config
+    ;;(require 'helm-config)
+    ;;(require 'helm)
+
+    ;; Activate Helm.
+    (helm-mode 1)
+    (helm-autoresize-mode -1))
+
+    (with-eval-after-load 'projectile
+      (use-package helm-projectile
+        :ensure t
+        ;; A binding for using Helm to pick files using Projectile,
+        ;; and override the normal grep with a Projectile based grep.
+        :bind (("C-c C-f" . helm-projectile-find-file-dwim)
+               ("C-x C-g" . helm-projectile-grep))
+        :config (setq projectile-switch-project-action 'helm-projectile)
+                (helm-projectile-on)))
+
+    (with-eval-after-load 'helm-files
+      (define-key helm-read-file-map (kbd "<backspace>") 'helm-find-files-up-one-level)
+      (define-key helm-find-files-map (kbd "<backspace>") 'helm-find-files-up-one-level))
+  ;;(use-package helm
+  ;;  :ensure t
+  ;;  :bind (("M-a" . helm-M-x)
+  ;;         ("C-x C-f" . helm-find-files)
+  ;;         ("C-x f" . helm-recentf)
+  ;;         ("C-SPC" . helm-dabbrev)
+  ;;         ("M-y" . helm-show-kill-ring)
+  ;;         ("C-x b" . helm-buffers-list))
+  ;;  :bind (:map helm-map
+  ;;	      ("M-i" . helm-previous-line)
+  ;;	      ("M-k" . helm-next-line)
+  ;;	      ("M-I" . helm-previous-page)
+  ;;	      ("M-K" . helm-next-page)
+  ;;	      ("M-h" . helm-beginning-of-buffer)
+  ;;	      ("M-H" . helm-end-of-buffer))
+  ;;  :config (progn
+  ;;	    (setq helm-buffers-fuzzy-matching t)
+  ;;            (helm-mode 1)))
+#+END_SRC
+
+* Dockerfile
+#+BEGIN_SRC emacs-lisp
+(use-package docker-compose-mode
+  :ensure t)
+(use-package dockerfile-mode
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+#+END_SRC
+
 * Projectile
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-  ;;  :diminish projectile-mode
-  ;;  :commands projectile-ag
-  ;;  :init (projectile-global-mode +1)
-    :config
-    (projectile-global-mode +1)
-    (setq projectile-completion-system 'ido
-    projectile-project-search-path '("~/git/" "~/Documents/"))
-    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+      (use-package projectile
+        :ensure t  
+        :init
+        (setq-default projectile-cache-file
+                    (expand-file-name ".projectile-cache" user-emacs-directory))
+        (add-hook 'prog-mode-hook #'projectile-mode)
+      ;;  :diminish projectile-mode
+      ;;  :commands projectile-ag
+      ;;  :init (projectile-global-mode +1)
+        :config
+        (projectile-global-mode +1)
+        (setq projectile-completion-system 'helm
+              projectile-project-search-path '("~/git/" "~/Dokumente/"))
+        (setq-default projectile-enable-caching nil
+                      projectile-mode-line '(:eval (format " [%s]" (projectile-project-name))))
+        (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+        (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+        (when (require 'magit nil t)
+        (mapc #'projectile-add-known-project
+            (mapcar #'file-name-as-directory (magit-list-repos)))
+        ;; Optionally write to persistent `projectile-known-projects-file'
+        (projectile-save-known-projects)))
+        (defun mm/smart-find-file ()
+          "Find files using projectile if within a project, or fall-back to ido."
+          (interactive)
+          (if (projectile-project-p)
+              (projectile-find-file)
+            (ido-find-file)))
 
-  ;;(use-package counsel-projectile(projectile-global-mode +1)
-  ;;  :ensure t
-  ;;  :config
-  ;;  (counsel-projectile-on))
+        (bind-key "M-t" 'mm/smart-find-file)
+
+        ;;(bind-key "C-x C-f" 'find-file)
+
+      ;;(use-package counsel-projectile(projectile-global-mode +1)
+      ;;  :ensure t
+      ;;  :config
+      ;;  (counsel-projectile-on))
+#+END_SRC
+* Parens
+#+BEGIN_SRC emacs-lisp 
+;; highlight matching parentheses
+(require 'paren)
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+(set-face-background 'show-paren-match (face-background 'default))
+(if (eq (frame-parameter nil 'background-mode) 'dark)
+    (set-face-foreground 'show-paren-match "red")
+  (set-face-foreground 'show-paren-match "black"))
+(set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+
+(use-package rainbow-delimiters
+  :ensure t
+  :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
 #+END_SRC
 * Which-key
   Add which-key.el to your =load-path= and require. Something like
@@ -257,32 +552,165 @@ This is my emacs config file in org mode
 #+END_SRC
 * Magit
 #+BEGIN_SRC emacs-lisp
-(use-package magit
-  :ensure t
-  :commands magit-status magit-blame
-  :init
-  (defadvice magit-status (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
-  :config
-  (setq magit-branch-arguments nil
-        ;; use ido to look for branches
-        magit-completing-read-function 'magit-ido-completing-read
-        ;; don't put "origin-" in front of new branch names by default
-        magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
-        magit-push-always-verify nil
-        ;; Get rid of the previous advice to go into fullscreen
-        magit-restore-window-configuration t)
+    (use-package git-gutter
+      :ensure t
+      :config (global-git-gutter-mode t)
+                 (git-gutter:linum-setup))
+    (use-package magit
+      :ensure t
+      :commands magit-status magit-blame
+      :init
+      (defadvice magit-status (around magit-fullscreen activate)
+        (window-configuration-to-register :magit-fullscreen)
+        ad-do-it
+        (delete-other-windows))
+      :config
+      (setq magit-branch-arguments nil
+            ;; use ido to look for branches
+            magit-completing-read-function 'magit-ido-completing-read
+            ;; don't put "origin-" in front of new branch names by default
+            magit-default-tracking-name-function 'magit-default-tracking-name-branch-only
+            magit-push-always-verify nil
+            ;; Get rid of the previous advice to go into fullscreen
+            magit-restore-window-configuration t
+            magit-repository-directories
+          ' (;; Directory containing project root directories
+            ("~/git/"      . 2)
+            ;; Specific project root directory
+            ;; ("~/dotfiles/" . 1)
+            ))
 
-  :bind ("C-x g" . magit-status))
+      :bind ("C-x g" . magit-status))
 
 #+END_SRC
 * IDO
 #+BEGIN_SRC emacs-lisp
-(use-package ido
-  :config
-  (setq ido-enable-flex-matching t)
-  (ido-everywhere t)
-  (ido-mode 1))
+;;  (use-package ido
+;;    :ensure t
+;;    :init (progn
+;;    (ido-mode 1)
+;;    (use-package ido-vertical-mode
+;;      :ensure t
+;;      :init (ido-vertical-mode 1))
+;;    (use-package flx-ido
+;;      :ensure t
+;;      :init (flx-ido-mode 1))
+;;    (use-package ido-ubiquitous
+;;      :ensure t
+;;      :init (defvar ido-cur-item nil)
+;;    (defvar ido-default-item nil)
+;;    (defvar ido-cur-list nil)))
+;;    :config
+;;    (setq ido-enable-flex-matching t
+;;    ido-everywhere t))
 #+END_SRC
+* Tramp
+#+BEGIN_SRC emacs-lisp
+  (use-package tramp
+    :defer 5
+    :config
+    (with-eval-after-load 'tramp-cache
+      (setq tramp-persistency-file-name "~/.emacs.d/tramp"))
+    (setq tramp-default-method "ssh"
+	  tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+	  tramp-adb-program "adb"
+	  ;; use the settings in ~/.ssh/config instead of Tramp's
+	  tramp-use-ssh-controlmaster-options nil
+	  ;; don't generate backups for remote files opened as root (security hazzard)
+	  backup-enable-predicate
+	  (lambda (name)
+	    (and (normal-backup-enable-predicate name)
+		 (not (let ((method (file-remote-p name 'method)))
+			(when (stringp method)
+			  (member method '("su" "sudo"))))))))
+  )
+#+END_SRC
+* Flycheck
+#+BEGIN_SRC emacs-lisp
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode)
+(add-hook 'after-init-hook #'global-flycheck-mode))
+
+#+END_SRC
+* Python
+#+BEGIN_SRC emacs-lisp
+  (use-package epc
+    :ensure t)
+  (use-package jedi
+    :ensure t)
+  (use-package py-autopep8
+    :ensure t
+    :config
+    (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+
+  (global-font-lock-mode t)
+  (setq font-lock-maximum-decoration t)
+
+  ;; no tabs but four spaces for indentation
+  (setq-default indent-tabs-mode nil)
+  (setq default-tab-width 4)
+
+  ;;(add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'eldoc-mode)
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (add-hook 'python-mode-hook 'jedi-mode)
+  (setq jedi:complete-on-dot t)
+
+  ;; company mode
+  (add-hook 'after-init-hook 'global-company-mode)
+
+  ;; company-anaconda
+  ;;(eval-after-load "company"
+  ;; '(progn
+  ;;   (add-to-list 'company-backends 'company-anaconda)))
+
+  ;; start in python mode
+  ;;(add-hook 'python-mode-hook 'anaconda-mode)
+      (use-package elpy
+          :ensure t
+          :bind ("M-." . elpy-goto-definition)
+          :init
+          (with-eval-after-load 'python (elpy-enable))
+          (setq elpy-rpc-backend "jedi")
+          (add-hook 'python-mode-hook #'flycheck-mode)
+          (setenv "LC_CTYPE" "UTF-8")
+          :config
+            (setq python-shell-interpreter-args "-i"
+            py-electric-colon-active t
+            python-indent-offset 4
+            py-force-py-shell-name-p t
+            py-shell-switch-buffers-on-execute-p t
+            py-smart-indentation t
+            python-shell-completion-native nil
+            ;; Stop pinging me about trying to guess the indentation.
+            ;; The defaults work fine.
+            python-indent-guess-indent-offset nil
+            python-shell-interpreter "ipython")
+            (let ((disabled-modules '(elpy-module-flymake
+                                elpy-module-highlight-indentation)))
+            (setq elpy-modules (-difference elpy-modules disabled-modules))))
+
+        (setq-default indent-tabs-mode nil)
+        (setq-default tab-width 4)
+
+        ;; Start/Stop jedi on env activation/deactivation
+        (add-hook 'pyvenv-post-activate-hooks 'jedi:start-server)
+        (add-hook 'pyvenv-post-activate-hook 'elpy-rpc-restart)
+        (add-hook 'pyvenv-post-deactivate-hooks 'jedi:stop-server)
+#+END_SRC
+* Saltstack
+  #+BEGIN_SRC emacs-lisp
+        (use-package salt-mode
+          :ensure t
+          :config
+          (add-hook 'salt-mode-hook
+        (lambda ()
+            (flyspell-mode 1))))
+  
+  #+END_SRC
+* Ranger
+  #+BEGIN_SRC emacs-lisp
+    (use-package ranger
+      :ensure t)
+  #+END_SRC
