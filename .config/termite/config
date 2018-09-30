@@ -3,7 +3,7 @@ allow_bold = true
 audible_bell = false
 clickable_url = true
 dynamic_title = true
-font = Iosevka Nerd Font Mono 11
+font = Iosevka Nerd Font Mono 13
 #font = Monospace 9
 #fullscreen = true
 #geometry = 640x480
@@ -39,7 +39,6 @@ cursor_shape = block
 # "off", "left" or "right"
 scrollbar = off
 
-[colors]
 # Copyright (c) 2016-present Arctic Ice Studio <development@arcticicestudio.com>
 # Copyright (c) 2016-present Sven Greb <code@svengreb.de>
 
