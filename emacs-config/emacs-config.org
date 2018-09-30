@@ -12,6 +12,7 @@ Stolen from:
     (load-theme 'zenburn t))
 
 #+END_SRC
+
 * Evil mode
 #+BEGIN_SRC emacs-lisp
 
@@ -31,6 +32,7 @@ Stolen from:
     :config
     (evil-collection-init))
 #+END_SRC
+
 * Neotree
   https://www.emacswiki.org/emacs/NeoTree#toc12
   #+BEGIN_SRC emacs-lisp
@@ -56,6 +58,7 @@ Stolen from:
     ))
   
   #+END_SRC
+
 * Calffw
   #+BEGIN_SRC emacs-lisp
       (use-package calfw-org
@@ -87,6 +90,7 @@ Stolen from:
             (require 'calfw-gcal))
   
   #+END_SRC
+
 * Epa File
 #+BEGIN_SRC emacs-lisp
 (use-package epa-file
@@ -118,6 +122,7 @@ Stolen from:
 ;;      org-gcal-file-alist '(...))
 
 #+END_SRC    
+
 * Org mode
 #+BEGIN_SRC emacs-lisp
     (use-package org-bullets
@@ -214,6 +219,7 @@ Stolen from:
     (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) )))
 
 #+END_SRC
+
 * Mail
 ** Mail - gnus-alias
    #+BEGIN_SRC emacs-lisp
@@ -221,6 +227,7 @@ Stolen from:
        :ensure t)
 
    #+END_SRC
+
 ** Mail - signature switching
 #+BEGIN_SRC emacs-lisp 
  ;; Define two identities, "home" and "work"
@@ -247,23 +254,27 @@ Stolen from:
      ;; Determine identity when message-mode loads
      (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
 #+END_SRC
+
 ** Mail - set html renderer 
 #+BEGIN_SRC emacs-lisp 
  ;; html renderer for mail
  (setq mm-text-html-rendrer "links")
 
 #+END_SRC
+
 ** Mail - set from address from mail header
 #+BEGIN_SRC emacs-lisp 
  (setq mail-specify-envelope-from "t")
  (setq message-sendmail-envelope-from "header")
  (setq mail-envelope-from "header")
 #+END_SRC
+
 ** Mail - gpg
 #+BEGIN_SRC emacs-lisp
 ;; Sign messages by default.
     (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
 #+END_SRC
+
 ** Notmuch
  #+BEGIN_SRC emacs-lisp
    (use-package popwin
@@ -336,6 +347,7 @@ Stolen from:
 (dolist (hook '(python-mode-hook))
   (add-hook hook 'turn-on-line-number))
 #+END_SRC
+
 * Faces
 #+BEGIN_SRC emacs-lisp
 (custom-set-faces
@@ -525,6 +537,7 @@ Stolen from:
       ;;  :config
       ;;  (counsel-projectile-on))
 #+END_SRC
+
 * Parens
 #+BEGIN_SRC emacs-lisp 
 ;; highlight matching parentheses
@@ -542,6 +555,7 @@ Stolen from:
   :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 #+END_SRC
+
 * Which-key
   Add which-key.el to your =load-path= and require. Something like
 #+BEGIN_SRC emacs-lisp
@@ -550,6 +564,7 @@ Stolen from:
     :config
     (which-key-mode))
 #+END_SRC
+
 * Magit
 #+BEGIN_SRC emacs-lisp
     (use-package git-gutter
@@ -583,6 +598,7 @@ Stolen from:
       :bind ("C-x g" . magit-status))
 
 #+END_SRC
+
 * IDO
 #+BEGIN_SRC emacs-lisp
 ;;  (use-package ido
@@ -604,6 +620,7 @@ Stolen from:
 ;;    (setq ido-enable-flex-matching t
 ;;    ido-everywhere t))
 #+END_SRC
+
 * Tramp
 #+BEGIN_SRC emacs-lisp
   (use-package tramp
@@ -625,6 +642,7 @@ Stolen from:
 			  (member method '("su" "sudo"))))))))
   )
 #+END_SRC
+
 * Flycheck
 #+BEGIN_SRC emacs-lisp
 (use-package flycheck
@@ -633,6 +651,7 @@ Stolen from:
 (add-hook 'after-init-hook #'global-flycheck-mode))
 
 #+END_SRC
+
 * Python
 #+BEGIN_SRC emacs-lisp
   (use-package epc
@@ -699,6 +718,7 @@ Stolen from:
         (add-hook 'pyvenv-post-activate-hook 'elpy-rpc-restart)
         (add-hook 'pyvenv-post-deactivate-hooks 'jedi:stop-server)
 #+END_SRC
+
 * Saltstack
   #+BEGIN_SRC emacs-lisp
         (use-package salt-mode
@@ -709,8 +729,10 @@ Stolen from:
             (flyspell-mode 1))))
   
   #+END_SRC
+
 * Ranger
   #+BEGIN_SRC emacs-lisp
     (use-package ranger
       :ensure t)
   #+END_SRC
+
