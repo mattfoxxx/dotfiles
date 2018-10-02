@@ -41,12 +41,18 @@ values."
      helm
      auto-completion
      better-defaults
+     django
      emacs-lisp
      git
+     go
+     html
+     javascript
      markdown
      org
+     pdf-tools
      python
-     django
+     restclient
+     shell-scripts
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -63,6 +69,8 @@ values."
      netrc
      org-gcal
      org-brain
+     org-cliplink
+     yasnippet-snippets
      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -340,6 +348,22 @@ you should place your code here."
            (hostentry (netrc-machine netrc host port port)))
       (when hostentry (netrc-get hostentry "login"))))
   (with-eval-after-load 'org
+
+    ;; (require 'ob)
+    ;; (require 'ob-shell)
+    ;; (require 'ob-ruby)
+    ;; (require 'ob-python)
+    ;; (require 'ob-sass)
+    ;; (require 'ob-tangle)
+    ;; (require 'ob-tangle)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . nil)
+       ;;(http . t)
+       (python . t)
+       (sass . t)
+       (shell . t)))
+
     (setq org-use-speed-commands t
           org-return-follows-link t
           org-hide-emphasis-markers t
@@ -352,6 +376,7 @@ you should place your code here."
                               (sequence "|" "CANCELED(c)")))
     (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
     (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
+
     (setq org-agenda-files (list "~/Dropbox/org-mode/gcal.org"
                                  "~/Dropbox/org-mode/i.org"
                                  "~/Dropbox/org-mode/schedule.org"
@@ -375,13 +400,15 @@ you should place your code here."
              "* %?\nEntered on %U\n  %i\n  %a")
             ("s" "Screencast" entry (file "~/Dropbox/org-mode/screencastnotes.org")
              "* %?\n%i\n")))
+
     (use-package org-gcal
       :ensure t
       :config
       (setq org-gcal-client-id (get-authinfo-login "gcal.api" "9999")
 	          org-gcal-client-secret (get-authinfo-pass "gcal.api" "9999")
             org-gcal-file-alist '(("mintert@billiger-mietwagen.de" . "~/Dropbox/org-mode/gcal.org")))
-      (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-sync) )))
+      (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-fetch) ))
+      (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) )))
 
     (use-package org-brain :ensure t
       :init
@@ -397,6 +424,19 @@ you should place your code here."
             org-capture-templates)
       (setq org-brain-visualize-default-choices 'all)
       (setq org-brain-title-max-length 12))
+
+    (with-eval-after-load 'org-brain
+      (use-package org-cliplink :ensure t)
+      (defun org-brain-cliplink-resource ()
+        "Add a URL from the clipboard as an org-brain resource.
+Suggest the URL title as a description for resource."
+        (interactive)
+        (let ((url (org-cliplink-clipboard-content)))
+          (org-brain-add-resource
+           url
+           (org-cliplink-retrieve-title-synchronously url)
+           t)))
+      (define-key org-brain-visualize-mode-map (kbd "L") #'org-brain-cliplink-resource))
   ))
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -409,7 +449,7 @@ you should place your code here."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
