@@ -33,3 +33,4 @@ Patterns * !"[Gmail]*" "[Gmail]/Gesendet" "[Gmail]/Markiert" "[Gmail]/Alle Nachr
 Create Both
 # Save the synchronization state files in the relevant directory
 SyncState *
+Expunge Slave

@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     yaml
      vimscript
      markdown
      ;; ----------------------------------------------------------------
@@ -42,20 +43,26 @@ values."
      auto-completion
      better-defaults
      django
+     docker
      emacs-lisp
      git
      go
      html
      javascript
      markdown
+     (mu4e :variables mu4e-account-alist t)
+     notmuch
      org
      pdf-tools
      python
+     ranger
      restclient
+     salt
      shell-scripts
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
+     (shell :variables
+            shell-default-shell 'multi-term
+            shell-default-height 30
+            shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
      version-control
@@ -135,7 +142,7 @@ values."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
    dotspacemacs-startup-lists '((recents . 5)
-                                (projects 5)
+                                (projects . 5)
                                 (agenda . 5)
                                 (todos . 7))
    ;; True if the home buffer should respond to resize events.
@@ -347,6 +354,91 @@ you should place your code here."
     (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
            (hostentry (netrc-machine netrc host port port)))
       (when hostentry (netrc-get hostentry "login"))))
+
+  (defun mm/file-string (file)
+    "Read the contents of a file and return as a string."
+    (with-current-buffer (find-file-noselect file)
+      (buffer-string)))
+
+  (setq mu4e-account-alist
+        '(("work"
+           ;; Under each account, set the account-specific variables you want.
+           (mu4e-sent-messages-behavior delete)
+           (mu4e-sent-folder "/gmail/[Gmail]/Gesendet")
+           (mu4e-drafts-folder "/gmail/[Gmail]/Entw&APw-rfe")
+           (mu4e-trash-folder "/gmail/[Gmail]/Papierkorb")
+           (mu4e-refile-folder "/gmail/[Gmail]/Alle Nachrichten")
+           (mu4e-compose-signature (mm/file-string "~/.signature"))
+           (user-mail-address "mintert@billiger-mietwagen.de")
+           (user-full-name "Matthias Mintert"))
+          ("mintert"
+           (mu4e-sent-messages-behavior sent)
+           (mu4e-sent-folder "/mintert/Sent Items")
+           (mu4e-drafts-folder "/mintert/Drafts")
+           (user-mail-address "matthias@mintert.net")
+           (user-full-name "Matthias Mintert"))))
+  (mu4e/mail-account-reset)
+  ;;; Set up some common mu4e variables
+  (setq mu4e-maildir "~/.mail"
+        mu4e-attachment-dir "~/Downloads"
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-update-interval nil
+        mu4e-compose-signature-auto-include t
+        mu4e-view-show-images t
+        mu4e-change-filenames-when-moving t
+        mu4e-view-show-addresses t)
+
+  ;;; Mail directory shortcuts
+  (setq mu4e-maildir-shortcuts
+        '(("/gmail/Inbox" . ?i)
+          ("/gmail/admin" . ?a)))
+
+  ;;; Bookmarks
+  (setq mu4e-bookmarks
+        `(("(flag:unread AND (maildir:\"/gmail/Inbox\" OR maildir:\"/gmail/admin\")) AND NOT flag:trashed" "Unread messages" ?u)
+          ("date:today..now" "Today's messages" ?t)
+          ("date:7d..now" "Last 7 days" ?w)
+          ("mime:image/*" "Messages with images" ?p)
+          (,(mapconcat 'identity
+                       (mapcar
+                        (lambda (maildir)
+                          (concat "maildir:" (car maildir)))
+                        mu4e-maildir-shortcuts) " OR ")
+           "All inboxes" ?i)))
+  (setq message-kill-buffer-on-exit t)
+
+  ;; Define two identities, "home" and "work"
+  (setq gnus-alias-identity-alist
+        '(("home"
+           nil ;; Does not refer to any other identity
+           "Matthias Mintert <matthias@mintert.net>" ;; Sender address
+           nil ;; No organization header
+           nil ;; No extra headers - ex. (("Bcc" . "john.doe@example.com"))
+           nil ;; No extra body text
+           "~/.signature.home")
+          ("work"
+           nil
+           "Matthias Mintert <mintert@billiger-mietwagen.de>"
+           "SilverTours GmbH"
+           (("Fcc" . "gmail/[Gmail]/Gesendet"))
+           nil
+           "~/.signature")))
+  ;; Use "home" identity by default
+  (setq gnus-alias-default-identity "work")
+  ;; Define rules to match work identity
+  (setq gnus-alias-identity-rules
+        '(("work" ("any" "mintert@\\(billiger-mietwagen\\.de\\)" both) "work")))
+  ;; Determine identity when message-mode loads
+  (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
+  (setq mail-specify-envelope-from "t")
+  (setq message-sendmail-envelope-from "header")
+  (setq mail-envelope-from "header")
+  (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
+  (progn
+    (require 'notmuch)
+    (define-key notmuch-search-mode-map " " spacemacs-cmds)
+    (define-key notmuch-show-mode-map " " spacemacs-cmds))
+
   (with-eval-after-load 'org
 
     ;; (require 'ob)
@@ -382,6 +474,11 @@ you should place your code here."
                                  "~/Dropbox/org-mode/schedule.org"
                                  "~/Dropbox/org-mode/todo.org"
                                  "~/Dropbox/org-mode/work.org"))
+
+    (setq org-agenda-custom-commands
+          `(("F" "Closed Yesterday"
+             tags (concat "+TODO=\"DONE\""
+                          "+CLOSED>=\"" (format-time-string "[%Y-%m-%d]" (time-subtract (current-time) (days-to-time 1))) "\""))))
 
     (setq org-capture-templates
           '(("a" "Appointments" entry (file  "~/Dropbox/org-mode/gcal.org" )
@@ -446,10 +543,24 @@ Suggest the URL title as a description for resource."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(create-lockfiles nil)
  '(evil-want-Y-yank-to-eol nil)
+ '(gnus-buttonized-mime-types (quote ("mulitpart/encrypted" "multipart/signed")))
+ '(mm-decrypt-option (quote always))
+ '(mm-verify-option (quote always))
+ '(mml-smime-cache-passphrase t)
+ '(mml-smime-use (quote epg))
+ '(notmuch-saved-searches
+   (quote
+    ((:name "inbox" :query "tag:Inbox" :key "i" :sort-order newest-first)
+     (:name "admin" :query "tag:admin" :key "a" :sort-order newest-first)
+     (:name "unread" :query "tag:unread" :key "u" :sort-order newest-first)
+     (:name "flagged" :query "tag:flagged" :key "f")
+     (:name "sent" :query "tag:sent" :key "t")
+     (:name "drafts" :query "tag:draft" :key "d"))))
  '(package-selected-packages
    (quote
-    (yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (mu4e-maildirs-extension mu4e-alert ht salt-mode mmm-jinja2 ranger yaml-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dockerfile-mode docker docker-tramp notmuch gnus-alias yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
