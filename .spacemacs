@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     php
+     nginx
      yaml
      vimscript
      markdown
@@ -40,19 +42,24 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
+     (ansible :variables
+              ansible-auto-encrypt-descrypt t
+              ansible::vault-password-file "~/git/ansible/.vault_pass")
      auto-completion
      better-defaults
      django
      docker
      emacs-lisp
      git
-     go
+     (go :variables gofmt-command "goimports")
      html
      javascript
      markdown
      (mu4e :variables mu4e-account-alist t)
      notmuch
+     nginx
      org
+     org-jira
      pdf-tools
      python
      ranger
@@ -65,6 +72,7 @@ values."
             shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
+     terraform
      version-control
      )
    ;; List of additional packages that will be installed without being
@@ -342,7 +350,12 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  (setq-default evil-escape-key-sequence "jj")
+  (use-package evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
+  (setq jiralib-url "https://jira.i.silvertours.net:443")
+  ;; (setq-default evil-escape-key-sequence "jj")
   (use-package netrc
     :ensure t)
   (defun get-authinfo-pass (host port)
@@ -360,33 +373,115 @@ you should place your code here."
     (with-current-buffer (find-file-noselect file)
       (buffer-string)))
 
-  (setq mu4e-account-alist
-        '(("work"
-           ;; Under each account, set the account-specific variables you want.
-           (mu4e-sent-messages-behavior delete)
-           (mu4e-sent-folder "/gmail/[Gmail]/Gesendet")
-           (mu4e-drafts-folder "/gmail/[Gmail]/Entw&APw-rfe")
-           (mu4e-trash-folder "/gmail/[Gmail]/Papierkorb")
-           (mu4e-refile-folder "/gmail/[Gmail]/Alle Nachrichten")
-           (mu4e-compose-signature (mm/file-string "~/.signature"))
-           (user-mail-address "mintert@billiger-mietwagen.de")
-           (user-full-name "Matthias Mintert"))
-          ("mintert"
-           (mu4e-sent-messages-behavior sent)
-           (mu4e-sent-folder "/mintert/Sent Items")
-           (mu4e-drafts-folder "/mintert/Drafts")
-           (user-mail-address "matthias@mintert.net")
-           (user-full-name "Matthias Mintert"))))
-  (mu4e/mail-account-reset)
-  ;;; Set up some common mu4e variables
-  (setq mu4e-maildir "~/.mail"
-        mu4e-attachment-dir "~/Downloads"
-        mu4e-get-mail-command "mbsync -a"
-        mu4e-update-interval nil
-        mu4e-compose-signature-auto-include t
-        mu4e-view-show-images t
-        mu4e-change-filenames-when-moving t
-        mu4e-view-show-addresses t)
+  ;; (defun mu4e-message-maildir-matches (msg rx)
+  ;;   (string-match rx (mu4e-message-field msg :maildir)))
+
+  (with-eval-after-load 'mu4e
+  ; Set up some common mu4e variables
+    (setq mail-user-agent 'mu4e-user-agent)
+    (setq mu4e-maildir "~/.mail"
+          mu4e-attachment-dir "~/Downloads"
+          mu4e-get-mail-command "mbsync -a"
+          mu4e-update-interval 120
+          mu4e-compose-signature-auto-include t
+          mu4e-view-show-images t
+          mu4e-change-filenames-when-moving t
+          mu4e-view-show-addresses t
+          ;;mu4e-contexts
+          ;;`( ,(make-mu4e-context
+          ;;     :name "Work"
+          ;;     ;; :enter-func (lambda () (mu4e-message "Switch to the Work context"))
+          ;;     ;; :leave-func (lambda () (mu4e-message "Leaving Work context"))
+          ;;     ;; we match based on the maildir of the message
+          ;;     ;; this matches maildir /Arkham and its sub-directories
+          ;;     ;; :match-func (lambda (msg)
+          ;;     ;;               (when msg
+          ;;     ;;                 (string-match-p "^/gmail*" (mu4e-message-field msg :maildir))))
+          ;;     ;; :match-func (lambda (msg)
+          ;;     ;;               (when msg (string= (mu4e-message-field msg :maildir) "/gmail")))
+          ;;     :match-func (lambda (msg) (when msg
+          ;;                                 (string-prefix-p "/gmail" (mu4e-message-field msg :maildir))))
+          ;;     :vars '( ( user-mail-address       . "mintert@billiger-mietwagen.de" )
+          ;;              ( user-full-name          . "Matthias Mintert" )
+          ;;              ( mu4e-sent-messages-behavior . delete )
+          ;;              ( mu4e-sent-folder        . "/gmail/[Gmail]/Gesendet" )
+          ;;              ( mu4e-drafts-folder      . "/gmail/[Gmail]/Entw&APw-rfe" )
+          ;;              ( mu4e-trash-folder       . "/gmail/[Gmail]/Papierkorb" )
+          ;;              ( mu4e-refile-folder      . "/gmail/[Gmail]/Alle Nachrichten" )
+          ;;              ( mu4e-compose-signature  . (mm/file-string "~/.signature") )
+          ;;              ;; ( mu4e-compose-signature  .
+          ;;              ;;                           (concat
+          ;;              ;;                            "Matthias Mintert\n"
+          ;;              ;;                            "IT-Systemadministrator\n\n"
+          ;;              ;;                            "www.billiger-mietwagen.de\n"
+          ;;              ;;                            "www.carigami.fr\n"
+          ;;              ;;                            "www.camperdays.de\n\n"
+          ;;              ;;                            "SilverTours GmbH\n"
+          ;;              ;;                            "Konrad-Goldmann-Straße 5d\n"
+          ;;              ;;                            "79100 Freiburg\n\n"
+          ;;              ;;                            "Fon + 49-761-55772540\n"
+          ;;              ;;                            "Fax + 49-761-55772569\n\n"
+          ;;              ;;                            "HRB: 7144 (Amtsgericht Freiburg)\n"
+          ;;              ;;                            "Geschäftsführer: Daniel Puschmann\n"))
+          ;;              ))
+          ;;   ,(make-mu4e-context
+          ;;     :name "Private"
+          ;;     :enter-func (lambda () (mu4e-message "Entering Private context"))
+          ;;     :leave-func (lambda () (mu4e-message "Leaving Private context"))
+          ;;     ;; we match based on the contact-fields of the message
+          ;;     :match-func (lambda (msg)
+          ;;                   (when msg
+          ;;                     (mu4e-message-contact-field-matches msg
+          ;;                                                         :to "matthias@mintert.net")))
+          ;;     :vars '( ( user-mail-address      . "matthias@mintert.net"  )
+          ;;              ( user-full-name         . "Matthias Mintert" )
+          ;;              ( mu4e-compose-signature .
+          ;;                                       (concat
+          ;;                                        "Alice Derleth\n"
+          ;;                                        "Lauttasaari, Finland\n"))))
+          ;;   )
+          )
+
+    (setq user-mail-address       "mintert@billiger-mietwagen.de"
+          user-full-name          "Matthias Mintert"
+          mu4e-sent-messages-behavior 'delete
+          mu4e-sent-folder        "/gmail/[Gmail]/Gesendet"
+          mu4e-drafts-folder      "/gmail/[Gmail]/Entw&APw-rfe"
+          mu4e-trash-folder       "/gmail/[Gmail]/Papierkorb"
+          mu4e-refile-folder      "/gmail/[Gmail]/Alle Nachrichten"
+          ;; mu4e-compose-signature  '(mm/file-string "~/.signature")
+          )
+
+  ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
+  ;; guess or ask the correct context, e.g.
+
+  ;; start with the first (default) context;
+  ;; default is to ask-if-none (ask when there's no context yet, and none match)
+  ;; (setq mu4e-context-policy 'pick-first)
+
+  ;; compose with the current context is no context matches;
+  ;; default is to ask
+  ;; (setq mu4e-compose-context-policy nil)
+
+
+  ;; (setq mu4e-account-alist
+  ;;       '(("work"
+  ;;          ;; Under each account, set the account-specific variables you want.
+  ;;          (mu4e-sent-messages-behavior delete)
+  ;;          (mu4e-sent-folder "/gmail/[Gmail]/Gesendet")
+  ;;          (mu4e-drafts-folder "/gmail/[Gmail]/Entw&APw-rfe")
+  ;;          (mu4e-trash-folder "/gmail/[Gmail]/Papierkorb")
+  ;;          (mu4e-refile-folder "/gmail/[Gmail]/Alle Nachrichten")
+  ;;          (mu4e-compose-signature (mm/file-string "~/.signature"))
+  ;;          (user-mail-address "mintert@billiger-mietwagen.de")
+  ;;          (user-full-name "Matthias Mintert"))
+  ;;         ("mintert"
+  ;;          (mu4e-sent-messages-behavior sent)
+  ;;          (mu4e-sent-folder "/mintert/Sent Items")
+  ;;          (mu4e-drafts-folder "/mintert/Drafts")
+  ;;          (user-mail-address "matthias@mintert.net")
+  ;;          (user-full-name "Matthias Mintert"))))
+  ;; (mu4e/mail-account-reset)
 
   ;;; Mail directory shortcuts
   (setq mu4e-maildir-shortcuts
@@ -405,39 +500,39 @@ you should place your code here."
                           (concat "maildir:" (car maildir)))
                         mu4e-maildir-shortcuts) " OR ")
            "All inboxes" ?i)))
-  (setq message-kill-buffer-on-exit t)
+  (setq message-kill-buffer-on-exit t))
 
-  ;; Define two identities, "home" and "work"
-  (setq gnus-alias-identity-alist
-        '(("home"
-           nil ;; Does not refer to any other identity
-           "Matthias Mintert <matthias@mintert.net>" ;; Sender address
-           nil ;; No organization header
-           nil ;; No extra headers - ex. (("Bcc" . "john.doe@example.com"))
-           nil ;; No extra body text
-           "~/.signature.home")
-          ("work"
-           nil
-           "Matthias Mintert <mintert@billiger-mietwagen.de>"
-           "SilverTours GmbH"
-           (("Fcc" . "gmail/[Gmail]/Gesendet"))
-           nil
-           "~/.signature")))
-  ;; Use "home" identity by default
-  (setq gnus-alias-default-identity "work")
-  ;; Define rules to match work identity
-  (setq gnus-alias-identity-rules
-        '(("work" ("any" "mintert@\\(billiger-mietwagen\\.de\\)" both) "work")))
-  ;; Determine identity when message-mode loads
-  (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
-  (setq mail-specify-envelope-from "t")
-  (setq message-sendmail-envelope-from "header")
-  (setq mail-envelope-from "header")
-  (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
-  (progn
-    (require 'notmuch)
-    (define-key notmuch-search-mode-map " " spacemacs-cmds)
-    (define-key notmuch-show-mode-map " " spacemacs-cmds))
+  ;; ;; Define two identities, "home" and "work"
+  ;; (setq gnus-alias-identity-alist
+  ;;       '(("home"
+  ;;          nil ;; Does not refer to any other identity
+  ;;          "Matthias Mintert <matthias@mintert.net>" ;; Sender address
+  ;;          nil ;; No organization header
+  ;;          nil ;; No extra headers - ex. (("Bcc" . "john.doe@example.com"))
+  ;;          nil ;; No extra body text
+  ;;          "~/.signature.home")
+  ;;         ("work"
+  ;;          nil
+  ;;          "Matthias Mintert <mintert@billiger-mietwagen.de>"
+  ;;          "SilverTours GmbH"
+  ;;          (("Fcc" . "gmail/[Gmail]/Gesendet"))
+  ;;          nil
+  ;;          "~/.signature")))
+  ;; ;; Use "home" identity by default
+  ;; (setq gnus-alias-default-identity "work")
+  ;; ;; Define rules to match work identity
+  ;; (setq gnus-alias-identity-rules
+  ;;       '(("work" ("any" "mintert@\\(billiger-mietwagen\\.de\\)" both) "work")))
+  ;; ;; Determine identity when message-mode loads
+  ;; (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
+  ;; (setq mail-specify-envelope-from "t")
+  ;; (setq message-sendmail-envelope-from "header")
+  ;; (setq mail-envelope-from "header")
+  ;; (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
+  ;; (progn
+  ;;   (require 'notmuch)
+  ;;   (define-key notmuch-search-mode-map " " spacemacs-cmds)
+  ;;   (define-key notmuch-show-mode-map " " spacemacs-cmds))
 
   (with-eval-after-load 'org
 
@@ -452,9 +547,13 @@ you should place your code here."
      'org-babel-load-languages
      '((emacs-lisp . nil)
        ;;(http . t)
+       (plantuml . t)
        (python . t)
        (sass . t)
        (shell . t)))
+
+    (setq org-plantuml-jar-path
+          (expand-file-name "~/bin/plantuml.jar"))
 
     (setq org-use-speed-commands t
           org-return-follows-link t
@@ -469,16 +568,27 @@ you should place your code here."
     (add-to-list 'auto-mode-alist '("\\.txt\\'" . org-mode))
     (add-to-list 'auto-mode-alist '(".*/[0-9]*$" . org-mode))   ;; Journal entries
 
+    (setq org-jira-working-dir "~/Dokumente/org/jira")
     (setq org-agenda-files (list "~/Dropbox/org-mode/gcal.org"
                                  "~/Dropbox/org-mode/i.org"
                                  "~/Dropbox/org-mode/schedule.org"
                                  "~/Dropbox/org-mode/todo.org"
-                                 "~/Dropbox/org-mode/work.org"))
+                                 "~/Dropbox/org-mode/work.org"
+                                 "~/Dokumente/org/jira"))
 
     (setq org-agenda-custom-commands
           `(("F" "Closed Yesterday"
              tags (concat "+TODO=\"DONE\""
-                          "+CLOSED>=\"" (format-time-string "[%Y-%m-%d]" (time-subtract (current-time) (days-to-time 1))) "\""))))
+                          "+CLOSED>=\"" (format-time-string "[%Y-%m-%d]" (time-subtract (current-time) (days-to-time 1))) "\""))
+            ("3" "Closed 3 days ago"
+             tags (concat "+TODO=\"DONE\""
+                          "+CLOSED>=\"" (format-time-string "[%Y-%m-%d]" (time-subtract (current-time) (days-to-time 3))) "\""))))
+
+    (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+    (setq org-refile-use-outline-path 'file)
+    (setq org-outline-path-complete-in-steps nil)
+    (setq org-refile-allow-creating-parent-nodes 'confirm)
+
 
     (setq org-capture-templates
           '(("a" "Appointments" entry (file  "~/Dropbox/org-mode/gcal.org" )
@@ -498,17 +608,14 @@ you should place your code here."
             ("s" "Screencast" entry (file "~/Dropbox/org-mode/screencastnotes.org")
              "* %?\n%i\n")))
 
-    (use-package org-gcal
-      :ensure t
-      :config
+    (with-eval-after-load 'org-gcal
       (setq org-gcal-client-id (get-authinfo-login "gcal.api" "9999")
 	          org-gcal-client-secret (get-authinfo-pass "gcal.api" "9999")
             org-gcal-file-alist '(("mintert@billiger-mietwagen.de" . "~/Dropbox/org-mode/gcal.org")))
       (add-hook 'org-agenda-mode-hook (lambda () (org-gcal-fetch) ))
       (add-hook 'org-capture-after-finalize-hook (lambda () (org-gcal-sync) )))
 
-    (use-package org-brain :ensure t
-      :init
+    (with-eval-after-load 'org-brain
       (setq org-brain-path "~/Dropbox/org-brain")
       ;; For Evil users
       (with-eval-after-load 'evil
@@ -561,8 +668,9 @@ Suggest the URL title as a description for resource."
  '(org-export-backends (quote (ascii html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (mu4e-maildirs-extension mu4e-alert ht salt-mode mmm-jinja2 ranger yaml-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dockerfile-mode docker docker-tramp notmuch gnus-alias yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
- '(paradox-github-token t))
+    (jinja2-mode company-ansible ansible-doc ansible terraform-mode hcl-mode phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode org-jira nginx-mode mu4e-maildirs-extension mu4e-alert ht salt-mode mmm-jinja2 ranger yaml-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dockerfile-mode docker docker-tramp notmuch gnus-alias yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+ '(paradox-github-token t)
+ '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
