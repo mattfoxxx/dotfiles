@@ -1,0 +1,192 @@
+* Installation
+
+** Tumbleweed
+  
+*** Install xfce
+    #+begin_src shell :dir /sudo::
+      zypper in -y patterns-xfce-xfce
+    #+end_src
+
+*** Install i3-gaps
+    #+begin_src shell :dir /sudo:: :results value raw
+      zypper in -y i3-gaps xautolock
+    #+end_src
+    
+*** Enable packman repository
+   [[https://en.opensuse.org/Additional_package_repositories][suse wiki]] 
+    #+begin_src shell :dir /sudo:: :results value raw
+      zypper ar -cfp 90 http://ftp.gwdg.de/pub/linux/misc/packman/suse/openSUSE_Tumbleweed/ packman
+      zypper --gpg-auto-import-keys ref
+      zypper dup -y --from packman --allow-vendor-change
+    #+end_src
+
+    #+RESULTS:
+
+*** Enable polybar repository and install it
+    #+begin_src shell :dir /sudo:: :results value raw
+      zypper ar https://download.opensuse.org/repositories/X11:/Utilities/openSUSE_Tumbleweed/ X11:Utilities
+      zypper --gpg-auto-import-keys ref
+      zypper in -y polybar
+      zypper dup -y --from X11:Utilities --allow-vendor-change
+    #+end_src
+
+    #+RESULTS:
+    | Adding     | repository                        | 'X11:Utilities' | [...error] |                             |       |         |           |         |    |         |            |
+    | Repository | 'X11:Utilities'                   | is              | up         | to                          | date. |         |           |         |    |         |            |
+    | Repository | 'Haupt-Repository                 | (NON-OSS)'      | is         | up                          | to    | date.   |           |         |    |         |            |
+    | Repository | 'Haupt-Repository                 | (OSS)'          | is         | up                          | to    | date.   |           |         |    |         |            |
+    | Repository | 'Hauptaktualisierungs-Repository' | is              | up         | to                          | date. |         |           |         |    |         |            |
+    | Repository | 'openSUSE-20190301-0'             | is              | up         | to                          | date. |         |           |         |    |         |            |
+    | Repository | 'packman'                         | is              | up         | to                          | date. |         |           |         |    |         |            |
+    | All        | repositories                      | have            | been       | refreshed.                  |       |         |           |         |    |         |            |
+    | Loading    | repository                        | data...         |            |                             |       |         |           |         |    |         |            |
+    | Reading    | installed                         | packages...     |            |                             |       |         |           |         |    |         |            |
+    | 'polybar'  | is                                | already         | installed. |                             |       |         |           |         |    |         |            |
+    | No         | update                            | candidate       | for        | 'polybar-3.3.0-1.4.x86_64'. | The   | highest | available | version | is | already | installed. |
+    | Resolving  | package                           | dependencies... |            |                             |       |         |           |         |    |         |            |
+    | Nothing    | to                                | do.             |            |                             |       |         |           |         |    |         |            |
+
+*** Install git
+    #+begin_src shell
+      sudo zypper in -y git autoconf
+    #+end_src
+
+*** Clone dotfiles
+    #+begin_src shell
+      mkdir -p ~/git && cd ~/git/t
+      git clone https://github.com/mattfoxxx/dotfiles.git
+    #+end_src
+
+*** Install emacs
+    #+begin_src shell :dir /sudo::
+      zypper in -y emacs
+    #+end_src
+
+*** Install spacemacs
+#+begin_src 
+
+#+end_src
+
+*** Enable i3-gaps
+**** [[https://feeblenerd.blogspot.com/2015/11/pretty-i3-with-xfce.html][VI. Deactivate Xubuntu's window manager]]    
+     1. Open 'Session and Startup', and go to the 'Session' tab.
+     2. Note xfwm4 and xfdesktop. These processes will be replaced by the i3 Window Manager.
+     3. For xfwm4, click 'Immediately' and change it to the  'Never' option.
+     4. For xfdesktop, click 'Immediately' and change it to the 'Never' option.
+     5. Click the button: 'Save Session'.
+     6. Go to the 'Application Autostart' tab to activate the i3 window manager in the next stage.
+     Note that you leave the xfce4-panel and Xfsettingsd as they are.
+     
+**** VII. Activate the i3 window manager
+     1. In the 'Session and Startup' window, make sure you are in the 'Application Autostart' tab.
+     2. Click the button 'Add' to add i3 to the list of startup applications.
+     3. Fill out the form:
+     		- Name: i3 (or whatever you want to call i3)
+     		- Description: Tiling Window Manager (or whatever you want)
+     		- Command: i3 (must be "i3", as below)
+
+     4. Click the button: OK
+     5. You should scroll down to the bottom of the list and verify that i3 is listed and checked.
+     	  (Yes, the intimidating terminal command to start i3 is . . . i3.)
+     6. Click the button: Close
+        
+**** VIII. Remove non-i3 Keyboard Shortcuts
+     Disabling the shortcuts here is about letting i3 take over in this regard, utilizing the i3 config file. Although my general philosophy is to avoid getting technical wherever possible (ie: avoid using a config file when a GUI is available), managing keyboard shortcuts through the i3 config file is inevitable if you want to use i3 at all. For the sake of peace-of-mind, as well as avoiding strange conflicts, I say avoid using 2 different applications for managing keyboard shortcuts. In this guide, ALL keyboard shortcuts are defined by the i3 config, rather than some here and some there. bleh.
+     1. Open the 'Keyboard' dialogue.
+     2. Go to the 'Application Shortcuts' tab as above.
+     3. Remove all keyboard shortcuts
+    		- You can shift-select all of them and click the button: 'Remove' 
+     4. Click the button: Close   
+
+*** Install fonts
+**** Siji
+     #+begin_src shell :results value raw
+       cd ~/git
+       (git clone https://github.com/stark/siji && cd siji) || cd siji
+       ./install.sh -d ~/.local/share/fonts
+     #+end_src
+
+     #+RESULTS:
+     [[1;32mOK[0m] Found directory: [1;37m/home/matze/.local/share/fonts[0m
+     [[1;33mXX[0m] [1;33mwarning:[0m Application 'bdftopcf': [1;37mNot Found[0m
+     [[1;32mOK[0m] Installing precompiled [1;37msiji.pcf[0m
+     [[1;32mOK[0m] Copying [1;37m'pcf/siji.pcf' -> '/home/matze/.local/share/fonts'[0m
+     [[1;32mOK[0m] Updating font cache... Please Wait [1;37m[0m
+     [[1;32mOK[0m] Finished. Your font cache has been updated [1;37m[0m
+
+       Successfully installed [1;37msiji.pcf -> /home/matze/.local/share/fonts[0m
+       Add the following snippet in your custom startup script that gets executed during xlogin:
+
+         [1;37mxset +fp /home/matze/.local/share/fonts[0m
+         [1;37mxset fp rehash[0m
+
+       If it already exists then you can skip this step.
+**** fontawesome-font
+     #+begin_src shell :dir /sudo:: :results value raw
+       zypper in -y fontawesome-fonts
+     #+end_src
+
+     #+RESULTS:
+     | Loading           | repository                             | data...                            |                                          |            |         |         |     |            |       |     |            |
+     | Reading           | installed                              | packages...                        |                                          |            |         |         |     |            |       |     |            |
+     | Resolving         | package                                | dependencies...                    |                                          |            |         |         |     |            |       |     |            |
+     | The               | following                              | NEW                                | package                                  | is         | going   | to      | be  | installed: |       |     |            |
+     | fontawesome-fonts |                                        |                                    |                                          |            |         |         |     |            |       |     |            |
+     | 1                 | new                                    | package                            | to                                       | install.   |         |         |     |            |       |     |            |
+     | Overall           | download                               | size:                              | 290.8                                    | KiB.       | Already | cached: | 0   | B.         | After | the | operation, |
+     | additional        | 391.0                                  | KiB                                | will                                     | be         | used.   |         |     |            |       |     |            |
+     | Continue?         | [y/n/v/...?                            | shows                              | all                                      | options]   | (y):    | y       |     |            |       |     |            |
+     | Retrieving        | package                                | fontawesome-fonts-4.7.0-1.7.noarch | (1/1),                                   | 290.8      | KiB     | (391.0  | KiB | unpacked)  |       |     |            |
+     | Retrieving:       | fontawesome-fonts-4.7.0-1.7.noarch.rpm | [done]                             |                                          |            |         |         |     |            |       |     |            |
+     | Checking          | for                                    | file                               | conflicts:                               | [...done]  |         |         |     |            |       |     |            |
+     | (1/1)             | Installing:                            | fontawesome-fonts-4.7.0-1.7.noarch | [.........done]                          |            |         |         |     |            |       |     |            |
+     | Executing         | %posttrans                             | script                             | 'fontawesome-fonts-4.7.0-1.7.noarch.rpm' | [....done] |         |         |     |            |       |     |            |
+*** Install and configure suckless st
+**** Packages
+    - make
+    - automake
+    - autoconf
+    - gcc-c++
+    - libX11-devel
+    - libXft-devel
+    - freetype2-devel
+    - fontconfig-devel
+    - go
+    - xurls: go get -u mvdan.cc/xurls/cmd/xurls
+    - add ~~/go/bin~ to path: ~export PATH=~/go/bin:$PATH~
+**** Patterns
+    - sudo zypper in -t pattern devel_C_C++
+**** Installation
+     #+begin_src shell :results value raw
+       cd ~/git
+       git clone git@github.com:mattfoxxx/st.git
+     #+end_src
+
+     #+begin_src shell :dir /sudo:: :results value raw
+       cd $HOME/git/st && sudo make clean install
+     #+end_src
+     
+*** Install and configure zsh
+    #+begin_src shell :results value raw
+      git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+      cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+      # chsh -s /bin/zsh # has to be done on shell due to interactive password dialogue
+    #+end_src
+
+    #+RESULTS:
+    Loading repository data...
+    Reading installed packages...
+    'zsh' is already installed.
+    No update candidate for 'zsh-5.7.1-1.1.x86_64'. The highest available version is already installed.
+    Resolving package dependencies...
+
+    Nothing to do.
+*** Packages
+    - keepassxc
+    - Dropbox
+    - ranger
+    - tmux
+    - dunst
+    - lxappearance
+*** Patterns
+
