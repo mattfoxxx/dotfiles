@@ -5,6 +5,10 @@
 ! vim:nu:ai:si:et:ts=4:sw=4:ft=xdefaults:
 ! ----------------------------------------------------------------------------
 
+#if __has_include(".colors.Xresources")
+#include ".colors.Xresources"
+#endif
+
 #if __has_include(".extend.Xresources")
 #include ".extend.Xresources"
 #endif
