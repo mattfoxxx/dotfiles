@@ -54,7 +54,9 @@ values."
      (go :variables gofmt-command "goimports")
      html
      javascript
-     markdown
+     (markdown :variables
+               markdown-live-preview-engine 'vmd
+               markdown-command "/usr/bin/pandoc")
      (mu4e :variables mu4e-account-alist t)
      notmuch
      nginx
@@ -73,6 +75,7 @@ values."
      ;; spell-checking
      ;; syntax-checking
      terraform
+     tmux
      version-control
      )
    ;; List of additional packages that will be installed without being
@@ -350,11 +353,12 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (spacemacs/toggle-indent-guide-globally-on)
   (use-package evil-surround
     :ensure t
     :config
     (global-evil-surround-mode 1))
-  (setq jiralib-url "https://jira.i.silvertours.net:443")
+  (setq jiralib-url "https://silvertours.atlassian.net:443")
   ;; (setq-default evil-escape-key-sequence "jj")
   (use-package netrc
     :ensure t)
@@ -576,6 +580,9 @@ you should place your code here."
                                  "~/Dropbox/org-mode/work.org"
                                  "~/Dokumente/org/jira"))
 
+    ;; (defconst org-jira-progress-issue-flow
+    ;;   '(("To Do" . "In Progress" ("In Progress" . "Done"))))
+
     (setq org-agenda-custom-commands
           `(("F" "Closed Yesterday"
              tags (concat "+TODO=\"DONE\""
@@ -668,7 +675,7 @@ Suggest the URL title as a description for resource."
  '(org-export-backends (quote (ascii html icalendar latex md odt)))
  '(package-selected-packages
    (quote
-    (jinja2-mode company-ansible ansible-doc ansible terraform-mode hcl-mode phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode org-jira nginx-mode mu4e-maildirs-extension mu4e-alert ht salt-mode mmm-jinja2 ranger yaml-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dockerfile-mode docker docker-tramp notmuch gnus-alias yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (vmd-mode jinja2-mode company-ansible ansible-doc ansible terraform-mode hcl-mode phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode org-jira nginx-mode mu4e-maildirs-extension mu4e-alert ht salt-mode mmm-jinja2 ranger yaml-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help dockerfile-mode docker docker-tramp notmuch gnus-alias yasnippet-snippets org-cliplink pdf-tools tablist web-mode web-beautify tagedit slim-mode scss-mode sass-mode restclient-helm pug-mode ob-restclient ob-http livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc insert-shebang helm-css-scss haml-mode go-guru go-eldoc fish-mode emmet-mode company-web web-completion-data company-tern tern company-shell company-restclient restclient know-your-http-well company-go go-mode coffee-mode org-gcal request-deferred deferred yapfify pyvenv pytest pyenv-mode py-isort pony-mode pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic vimrc-mode dactyl-mode org-brain unfill smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download mwim magit-gitflow htmlize helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter fuzzy evil-magit magit magit-popup git-commit ghub treepy graphql with-editor diff-hl company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t)
  '(send-mail-function (quote sendmail-send-it)))
 (custom-set-faces
