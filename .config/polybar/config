@@ -24,7 +24,7 @@ alert = ${xrdb:color1:#bd2c40}
 monitor = ${env:MONITOR:eDP1}
 bottom = true
 width = 100%
-height = 35
+height = 40
 ;offset-x = 1%
 ;offset-y = 1%
 ;radius = 4.0
@@ -36,27 +36,29 @@ foreground = ${colors.foreground}
 line-size = 2
 line-color = #f00
 
-border-top-size = 6
+border-top-size = 0
 border-color = #00000000
 
 ;margin-top = 10
-padding-left = 0
+padding-top = 4
+padding-left = 2
 padding-right = 2
 
 module-margin-left = 1
-module-margin-right = 2
+module-margin-right = 0
 
-font-0 = fixed:pixelsize=12;1
+font-0 = "Iosevka Nerd Font Mono:style=Medium,Regular:size=12;0"
+# font-0 = fixed:pixelsize=12;1
 font-1 = unifont:fontformat=truetype:size=10:antialias=false;0
-font-2 = "Wuncon siji:pixelsize=16;1"
-font-3 = "FontAwesome:pixelsize=10;0"
+font-2 = "Wuncon siji:pixelsize=16;0"
+font-3 = "FontAwesome:pixelsize=12;2"
 
 modules-left = i3
 modules-center = xwindow
 modules-right = xbacklight volume filesystem memory cpu wlan eth battery temperature date 
 
 tray-position = right
-tray-padding = 2
+tray-padding = 4
 ;tray-transparent = true
 ;tray-background = #0063ff
 
@@ -126,7 +128,7 @@ label-empty-padding = 2
 
 [module/i3]
 type = internal/i3
-format = <label-state> <label-mode>
+format = %{T0}<label-state>%{T-} <label-mode>
 index-sort = true
 wrapping-scroll = false
 ;strip-wsnumbers = true 
@@ -138,49 +140,49 @@ label-mode-foreground = #000
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
-label-focused = %name%
+label-focused = %{T4}%name%%{T-}
 label-focused-background = ${module/bspwm.label-focused-background}
 label-focused-underline = ${module/bspwm.label-focused-underline}
 label-focused-padding = ${module/bspwm.label-focused-padding}
 
 ; unfocused = Inactive workspace on any monitor
-label-unfocused = %name%
+label-unfocused = %{T4}%name%%{T-}
 label-unfocused-padding = ${module/bspwm.label-occupied-padding}
 
 ; visible = Active workspace on unfocused monitor
-label-visible = %name%
+label-visible = %{T4}%name%%{T-}
 label-visible-background = ${self.label-focused-background}
 label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %name%
+label-urgent = %{T4}%name%%{T-}
 label-urgent-background = ${module/bspwm.label-urgent-background}
 label-urgent-padding = ${module/bspwm.label-urgent-padding}
 
-ws-icon-1 = 1 ;
+ws-icon-1 = 
 # Terminals
-ws-icon-2 = 2;
+ws-icon-2 = 
 # Browser
-ws-icon-3 = 3;
+ws-icon-3 = 
 # IM
-ws-icon-4 = 4;
+ws-icon-4 = 
 # Mail
-ws-icon-5 = 5;
+ws-icon-5 = 
 # Filemanager
-ws-icon-6 = 6;
+ws-icon-6 = 
 # Video
-ws-icon-7 = 7;
+ws-icon-7 = 
 # 
-ws-icon-8 = 8;
+ws-icon-8 = 
 # Office
-ws-icon-9 = 9;
+ws-icon-9 = 
 # Keepass
-ws-icon-10 = 10;
+ws-icon-10 = 
 # Music
-ws-icon-11 = 11;
+ws-icon-11 = 
 # Music
-ws-icon-12 = 12;
+ws-icon-12 = 
 
 [module/mpd]
 type = internal/mpd
@@ -225,7 +227,7 @@ card = psb-bl
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = " "
+format-prefix = "%{T4} %{T-}"
 format-prefix-foreground = ${colors.foreground-alt}
 ;format-underline = #f90000
 label = %percentage:2%%
@@ -233,14 +235,14 @@ label = %percentage:2%%
 [module/memory]
 type = internal/memory
 interval = 2
-format-prefix = " "
+format-prefix = "%{T4} %{T-}"
 format-prefix-foreground = ${colors.foreground-alt}
 ;format-underline = #4bffdc
 label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlp1s0
+interface = wlp2s0
 interval = 3.0
 
 format-connected = <ramp-signal> <label-connected>
@@ -253,11 +255,11 @@ format-disconnected =
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
 
-ramp-signal-0 = 
-ramp-signal-1 = 
-ramp-signal-2 = 
-ramp-signal-3 = 
-ramp-signal-4 = 
+ramp-signal-0 = %{T3}%{T-}
+ramp-signal-1 = %{T3}%{T-}
+ramp-signal-2 = %{T3}%{T-}
+ramp-signal-3 = %{T3}%{T-}
+ramp-signal-4 = %{T3}%{T-}
 ramp-signal-foreground = ${colors.foreground-alt}
 
 [module/eth]
@@ -266,7 +268,7 @@ interface = enp62s0u1u2
 interval = 3.0
 
 #format-connected-underline = #55aa55
-format-connected-prefix = " "
+format-connected-prefix = "%{T4} %{T}"
 format-connected-prefix-foreground = ${colors.foreground-alt}
 label-connected = %local_ip%
 
@@ -286,7 +288,7 @@ date-alt = " %Y-%m-%d"
 time = %H:%M
 time-alt = %H:%M:%S
 
-format-prefix = 
+format-prefix = %{T4} %{T-}
 format-prefix-foreground = ${colors.foreground-alt}
 ;format-underline = #0a6cf5
 
@@ -296,10 +298,10 @@ label = %date% %time%
 type = internal/volume
 
 format-volume = <label-volume> <bar-volume>
-label-volume = 
+label-volume = %{T4}%{T-}
 label-volume-foreground = ${colors.foreground}
 
-format-muted-prefix = " "
+format-muted-prefix = "%{T4} %{T-}"
 format-muted-foreground = ${colors.foreground-alt}
 label-muted = sound muted
 
@@ -332,18 +334,18 @@ format-charging = <animation-charging> <label-charging>
 format-discharging = <ramp-capacity> <label-discharging>
 ;format-discharging-underline = ${self.format-charging-underline}
 
-format-full-prefix = " "
+format-full-prefix = "%{T4 } %{T -}"
 format-full-prefix-foreground = ${colors.foreground-alt}
 ;format-full-underline = ${self.format-charging-underline}
 
-ramp-capacity-0 = 
-ramp-capacity-1 = 
-ramp-capacity-2 = 
+ramp-capacity-0 = %{T4}%{T-}
+ramp-capacity-1 = %{T4}%{T-}
+ramp-capacity-2 = %{T4}%{T-}
 ramp-capacity-foreground = ${colors.foreground-alt}
 
-animation-charging-0 = 
-animation-charging-1 = 
-animation-charging-2 = 
+animation-charging-0 = %{T4}%{T-}
+animation-charging-1 = %{T4}%{T-}
+animation-charging-2 = %{T4}%{T-}
 animation-charging-foreground = ${colors.foreground-alt}
 animation-charging-framerate = 750
 
@@ -361,9 +363,9 @@ label = %temperature%
 label-warn = %temperature%
 label-warn-foreground = ${colors.secondary}
 
-ramp-0 = 
-ramp-1 = 
-ramp-2 = 
+ramp-0 = %{T4}%{T-}
+ramp-1 = %{T4}%{T-}
+ramp-2 = %{T4}%{T-}
 ramp-foreground = ${colors.foreground-alt}
 
 [module/powermenu]
