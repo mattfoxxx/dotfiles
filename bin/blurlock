@@ -1,15 +1,20 @@
 #!/bin/bash
 # /usr/bin/blurlock
 
+img="/tmp/screenshot.png" 
+lock_img="/tmp/screenshotblur.png"
+
 # take screenshot
-import -window root /tmp/screenshot.png
+import -window root $img
 
 # blur it
-convert /tmp/screenshot.png -blur 0x5 /tmp/screenshotblur.png
-rm /tmp/screenshot.png
+convert $img -scale 10% -scale 1000% $lock_img
+#convert /tmp/screenshot.png -blur 0x5 /tmp/screenshotblur.png
+#convert $img $icon -gravity center -composite $img
+rm $img
 
 # lock the screen
-i3lock -i /tmp/screenshotblur.png
+i3lock -i $lock_img
 
 # sleep 1 adds a small delay to prevent possible race conditions with suspend
 sleep 1

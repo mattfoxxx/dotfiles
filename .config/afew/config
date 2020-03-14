@@ -6,11 +6,17 @@
 sent_tag = sent
 [ArchiveSentMailsFilter]
 [FolderNameFilter.0]
-folder_transforms = Entw&APw-rfe:draft Gesendet:sent INBOX:inbox Spam:spam "Alle Nachrichten":archive "[Gmail]":archive gmail:archive
+folder_transforms = Entw&APw-rfe:draft Gesendet:sent Spam:spam "Alle Nachrichten":archived
+# INBOX:inbox "[Gmail]":archive gmail:archive
+folder_blacklist = [Gmail] INBOX
 maildir_separator = /
+folder_lowercases = true
 [InboxFilter]
 tags = -new
-
+[Filter.0]
+message = Remove all mails for group accounts out of inbox
+query = tag:hostmaster or tag:cron or tag:admin or tag:postmaster or tag:backup or tag:kes
+tags = -Inbox
 
 #[MailMover]
 #folders = INBOX Spam

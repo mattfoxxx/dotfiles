@@ -52,7 +52,7 @@ primary_email=mintert@billiger-mietwagen.de
 [new]
 #tags=unread;inbox;
 tags=new
-ignore=
+ignore=.mbsyncstate;.uidvalidity
 
 # Search configuration
 #

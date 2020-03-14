@@ -49,8 +49,8 @@ module-margin-right = 0
 
 font-0 = "Iosevka Nerd Font Mono:style=Medium,Regular:size=12;0"
 # font-0 = fixed:pixelsize=12;1
-font-1 = unifont:fontformat=truetype:size=10:antialias=false;0
-font-2 = "Wuncon siji:pixelsize=16;0"
+font-1 = "unifont:fontformat=truetype:size=10:antialias=false;0"
+font-2 = "Siji:pixelsize=16;-1"
 font-3 = "FontAwesome:pixelsize=12;2"
 
 modules-left = i3
@@ -227,7 +227,7 @@ card = psb-bl
 [module/cpu]
 type = internal/cpu
 interval = 2
-format-prefix = "%{T4} %{T-}"
+format-prefix = "%{T3} %{T-}"
 format-prefix-foreground = ${colors.foreground-alt}
 ;format-underline = #f90000
 label = %percentage:2%%
