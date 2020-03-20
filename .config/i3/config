@@ -67,7 +67,7 @@ bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi -dmenu -i -th
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
-bindsym $mod+dead_circumflex exec --no-startup-id ~/.scripts/i3/dmenuunicode
+bindsym $mod+asciicircum exec --no-startup-id ~/.scripts/i3/dmenuunicode
 
 # launch categorized menu
 bindsym $mod+Shift+z exec --no-startup-id morc_menu
@@ -99,7 +99,7 @@ bindsym $mod+Shift+F5 exec gksu thunar
 bindsym $mod+F3 exec ranger
 # bindsym $mod+F3 exec terminal -e 'mocp'
 bindsym $mod+Shift+t exec --no-startup-id pkill compton
-bindsym $mod+Ctrl+t exec --no-startup-id compton -b
+bindsym $mod+Ctrl+t exec --no-startup-id compton -b --config ~/.compton.conf
 bindsym $mod+Ctrl+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
@@ -272,7 +272,7 @@ bindsym $mod+Shift+dead_acute move container to workspace $workspace12; workspac
 
 assign [class="Google-chrome"] $workspace2
 assign [class="Chromium"] $workspace2
-assign [class="Firefox"] $workspace2
+assign [class="firefox"] $workspace2
 assign [class="Terminator"] $workspace1
 assign [class="X-terminal-emulator"] $workspace1
 assign [class="URxvt"] $workspace1
@@ -344,7 +344,7 @@ for_window [class="TeamViewer"] floating enable
 for_window [class="X-terminal-emulator"] floating disable
 for_window [class="Google-chrome"] border none
 for_window [class="Chromium"] border none
-for_window [class="Firefox"] border none
+for_window [class="firefox"] border none
 for_window [class="Thunderbird"] border none
 for_window [instance=pavucontrol] floating enable, move scratchpad, scratchpad show
 for_window [instance="ncmpcpp"] move to scratchpad
@@ -434,7 +434,7 @@ exec --no-startup-id urxvt -name media -e mux start default
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 #exec --no-startup-id manjaro-hello
-#exec --no-startup-id nm-applet
+exec --no-startup-id nm-applet
 #exec --no-startup-id xfce4-power-manager
 #exec --no-startup-id pamac-tray
 #exec --no-startup-id clipit

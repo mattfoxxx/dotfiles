@@ -1,10 +1,15 @@
-IMAPAccount gmail
+##############################################################################
+#
+#								bmw-gmail
+#
+##############################################################################
+IMAPAccount bmw-gmail
 # Address to connect to
 Host imap.gmail.com
 User mintert@billiger-mietwagen.de
 # Pass ******
 # To store the password in an encrypted file use PassCmd instead of Pass
-PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.BMW.gpg"
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.secrets/.BMW.gpg"
 #
 # Use SSL
 SSLType IMAPS
@@ -13,22 +18,62 @@ CertificateFile /etc/ssl/certs/ca-certificates.crt
 #CertificateFile ~/.cert/imap.gmail.com.pem
 #CertificateFile ~/.cert/Equifax_Secure_CA.pem
 
-IMAPStore gmail-remote
-Account gmail
+IMAPStore bmw-gmail-remote
+Account bmw-gmail
 
-MaildirStore gmail-local
+MaildirStore bmw-gmail-local
 Subfolders Verbatim
 # The trailing "/" is important
-Path ~/.mail/gmail/
-Inbox ~/.mail/gmail/Inbox
+Path ~/.mail/bmw-gmail/
+Inbox ~/.mail/bmw-gmail/Inbox
 
-Channel gmail
-Master :gmail-remote:
-Slave :gmail-local:
+Channel bmw-gmail
+Master :bmw-gmail-remote:
+Slave :bmw-gmail-local:
 # Exclude everything under the internal [Gmail] folder, except the interesting folders
 Patterns * !"[Gmail]*" "[Gmail]/Gesendet" "[Gmail]/Markiert" "[Gmail]/Alle Nachrichten" "[Gmail]/Spam" "[Gmail]/Papierkorb" "[Gmail]/Entw&APw-rfe"
 # Or include everything
 #Patterns *
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+Expunge Slave
+
+##############################################################################
+#
+#								mintert-net
+#
+##############################################################################
+IMAPAccount mintert-net
+# Address to connect to
+Host mail.your-server.de
+User matthias@mintert.net
+# Pass ******
+# To store the password in an encrypted file use PassCmd instead of Pass
+PassCmd "gpg2 -q --for-your-eyes-only --no-tty -d ~/.secrets/mintert-net.gpg"
+#
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore mintert-net-remote
+Account mintert-net
+
+MaildirStore mintert-net-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/mintert-net/
+Inbox ~/.mail/mintert-net/INBOX
+
+Channel mintert-net
+Master :mintert-net-remote:
+Slave :mintert-net-local:
+# Or include everything
+Patterns *
 # Automatically create missing mailboxes, both locally and on the server
 Create Both
 # Save the synchronization state files in the relevant directory

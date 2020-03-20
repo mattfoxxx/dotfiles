@@ -33,6 +33,7 @@ path=/home/matthias.mintert/.mail
 [user]
 name=Matthias Mintert
 primary_email=mintert@billiger-mietwagen.de
+other_email=matthias@mintert.net
 
 # Configuration for "notmuch new"
 #

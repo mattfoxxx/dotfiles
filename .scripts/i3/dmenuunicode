@@ -5,7 +5,7 @@
 # Must have xclip installed to even show menu.
 xclip -h >/dev/null || exit
 
-chosen=$(grep -v "#" ~/.emoji | dmenu -i -l 20 -fn "Inconsolata for Powerline-10")
+chosen=$(grep -v "#" ~/.emoji | dmenu -i -l 20 -fn "NotoEmoji Nerd Font Mono:style=Book:size=14")
 
 [ "$chosen" != "" ] || exit
 
