@@ -20,7 +20,8 @@ case $chosen in
         systemctl reboot
         ;;
     $lock)
-        light-locker-command -l
+        # light-locker-command -l
+		loginctl lock-session
         ;;
     $suspend)
         mpc -q pause
@@ -29,6 +30,7 @@ case $chosen in
         ;;
     $log_out)
         i3-msg exit
+		qdbus org.kde.ksmserver /KSMServer logout 0 3 3
         ;;
 esac
 
