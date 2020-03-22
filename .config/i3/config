@@ -62,9 +62,9 @@ bindsym $mod+Shift+q kill
 #bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -b -nb '#303030' -sb '#101010' -sf '#16a085' -fn 'Terminus-11' -l 10"
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu='rofi -dmenu -i -theme /usr/share/rofi/themes/Adapta-Nokto.rasi'
 # bindsym $mod+d exec --no-startup-id dmenu_recency
-bindsym $mod+space exec --no-startup-id rofi-appsmenu
-bindsym $mod+Shift+o exec --no-startup-id rofi-vpn
-bindsym $mod+o exec --no-startup-id rofi-power
+bindsym $mod+space exec --no-startup-id ~/bin/appmenu
+bindsym $mod+Shift+o exec --no-startup-id ~/bin/nmvpnmenu
+bindsym $mod+o exec --no-startup-id ~/bin/powermenu
 
 
 # There also is the (new) i3-dmenu-desktop which only displays applications
@@ -105,11 +105,11 @@ bindsym $mod+F5 exec thunar
 bindsym $mod+Shift+F5 exec gksu thunar
 bindsym $mod+F3 exec ranger
 # bindsym $mod+F3 exec terminal -e 'mocp'
-bindsym $mod+Shift+t exec --no-startup-id pkill compton
-bindsym $mod+Ctrl+t exec --no-startup-id compton -b --blur-method kawase --blur-strength 100
+bindsym $mod+Shift+t exec --no-startup-id pkill picom
+bindsym $mod+Ctrl+t exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config /dev/null
 bindsym $mod+Ctrl+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 #bindsym Print exec --no-startup-id i3-scrot
-bindsym Print exec --no-startup-id rofi-scrot
+bindsym Print exec --no-startup-id scrotmenu
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
 bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
 #bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
@@ -441,9 +441,9 @@ exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 #exec --no-startup-id blueman-applet
 #exec --no-startup-id terminator -c ncmpcpp -x ncmpcpp
 #exec --no-startup-id pidgin
-#exec --no-startup-id google-chrome
-exec --no-startup-id firefox
-exec --no-startup-id thunderbird
+exec --no-startup-id google-chrome
+#exec --no-startup-id firefox
+#exec --no-startup-id thunderbird
 exec --no-startup-id slack
 #exec --no-startup-id nagstamon
 #exec --no-startup-id fluxgui
@@ -458,7 +458,7 @@ exec --no-startup-id sleep 5; birdtray
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id compton -b; sleep 1; nitrogen --restore
+exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config /dev/null; sleep 1; nitrogen --restore
 #exec --no-startup-id manjaro-hello
 #exec --no-startup-id nm-applet
 #exec --no-startup-id xfce4-power-manager
