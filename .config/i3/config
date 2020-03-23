@@ -106,7 +106,7 @@ bindsym $mod+Shift+F5 exec gksu thunar
 bindsym $mod+F3 exec ranger
 # bindsym $mod+F3 exec terminal -e 'mocp'
 bindsym $mod+Shift+t exec --no-startup-id pkill picom
-bindsym $mod+Ctrl+t exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config /dev/null
+bindsym $mod+Ctrl+t exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config ~/.picom.conf
 bindsym $mod+Ctrl+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 #bindsym Print exec --no-startup-id i3-scrot
 bindsym Print exec --no-startup-id scrotmenu
@@ -359,7 +359,27 @@ for_window [instance=pavucontrol] floating enable, move scratchpad, scratchpad s
 for_window [instance="ncmpcpp"] move to scratchpad
 for_window [class="Zoiper"] floating disable, move scratchpad, scratchpad show
 
+# Don’t treat Plasma pop-ups as full-sized windows
+for_window [class="plasmashell"] floating enable
 
+# Don’t spawn an empty window for the Plasma Desktop
+for_window [title="Arbeitsfläche — Plasma"] kill, floating enable, border none
+# Try to kill the wallpaper set by Plasma (it takes up the entire workspace and hides everythiing)
+exec --no-startup-id wmctrl -c Plasma
+
+# Don’t let notifications and non-interactive pop-up windows steal focus
+no_focus [class="plasmashell" window_type="notification"]
+no_focus [class="plasmashell" window_type="on_screen_display"]
+for_window [class="plasmashell"] floating enable;
+for_window [class="Plasma"] floating enable; border none
+for_window [title="plasma-desktop"] floating enable; border none
+for_window [title="win7"] floating enable; border none
+for_window [class="krunner"] floating enable; border none
+for_window [class="Kmix"] floating enable; border none
+for_window [class="Klipper"] floating enable; border none
+for_window [class="Plasmoidviewer"] floating enable; border none
+for_window [class="(?i)*nextcloud*"] floating disable
+for_window [class="plasmashell" window_type="notification"] floating enable, border none, move right 700px, move down 450px, no_focus 
 # reload the configuration file
 bindsym $mod+Shift+c reload
 
@@ -431,7 +451,6 @@ mode "$display" {
 # Lock screen
 bindsym $mod+p exec --no-startup-id blurlock
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 #exec_always --no-startup-id xmodmap -e "clear lock" #disable caps lock switch
 #exec_always --no-startup-id xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as escape
 #exec compton -f
@@ -453,12 +472,13 @@ exec --no-startup-id keepassxc
 #exec --no-startup-id echo "$0: DESKTOP_AUTOSTART_ID $DESKTOP_AUTOSTART_ID, registering with org.gnome.SessionManager"
 #exec --no-startup-id dbus-send --session --print-reply=literal --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.RegisterClient "string:i3" "string:$DESKTOP_AUTOSTART_ID"
 exec --no-startup-id urxvt -name media -e mux start default
-exec --no-startup-id sleep 5; birdtray
+exec --no-startup-id sleep 1; birdtray
 
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config /dev/null; sleep 1; nitrogen --restore
+#exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config /dev/null; sleep 1; nitrogen --restore
+exec --no-startup-id picom --config ~/.picom.conf; sleep 1; nitrogen --restore
 #exec --no-startup-id manjaro-hello
 #exec --no-startup-id nm-applet
 #exec --no-startup-id xfce4-power-manager
@@ -471,6 +491,7 @@ exec --no-startup-id start_conky_maia
 exec --no-startup-id xautolock -time 10 -locker blurlock
 #exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec dex -ae i3
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )

@@ -29,8 +29,8 @@ case $chosen in
         systemctl suspend
         ;;
     $log_out)
-        i3-msg exit
 		qdbus org.kde.ksmserver /KSMServer logout 0 3 3
+        i3-msg exit
         ;;
 esac
 
