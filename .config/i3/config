@@ -79,7 +79,7 @@ bindsym $mod+Shift+F12 exec --no-startup-id ~/.scripts/i3/killrecording
 # launch categorized menu
 bindsym $mod+Shift+z exec --no-startup-id morc_menu
 #bindsym $mod+z exec tdrop -ma termite
-bindsym $mod+z exec tdrop -ma termite
+bindsym $mod+z exec tdrop -m -a -f "--class tdrop" termite
 for_window [class="termite"] fullscreen disable, floating enable border normal 1
 
 ################################################################################################
@@ -106,7 +106,8 @@ bindsym $mod+Shift+F5 exec gksu thunar
 bindsym $mod+F3 exec ranger
 # bindsym $mod+F3 exec terminal -e 'mocp'
 bindsym $mod+Shift+t exec --no-startup-id pkill picom
-bindsym $mod+Ctrl+t exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config ~/.picom.conf
+bindsym $mod+Ctrl+t exec --no-startup-id picom --config ~/.picom.conf
+#bindsym $mod+Ctrl+t exec --no-startup-id picom -bcCGf -i 0.9 -e 0.9 --sw-opti --config ~/.picom.conf
 bindsym $mod+Ctrl+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 #bindsym Print exec --no-startup-id i3-scrot
 bindsym Print exec --no-startup-id scrotmenu
@@ -297,7 +298,7 @@ assign [class="Nemo"] $workspace5
 assign [class="Apache Directory Studio"] $workspace11
 assign [class="Wireshark-gtk"] $workspace11
 assign [class="Remmina"] $workspace12
-assign [class="keepassxc"] $workspace9
+assign [class="KeePassXC"] $workspace9
 assign [class="KeePass2"] $workspace9
 assign [class="KeePass.exe"] $workspace9
 # worked with Spotify 0.9
@@ -352,10 +353,17 @@ for_window [class="Terminator"] floating disable
 for_window [class="TeamViewer"] floating enable
 for_window [class="X-terminal-emulator"] floating disable
 for_window [class="Google-chrome"] border none
+for_window [class="Google-chrome" instance="google-chrome" window_role="GtkFileChooserDialog"] border pixel 1
 for_window [class="Chromium"] border none
 for_window [class="Firefox"] border none
 for_window [class="Thunderbird"] border none
 for_window [instance=pavucontrol] floating enable, move scratchpad, scratchpad show
+for_window [class="Thunderbird" instance="Calendar" window_role="AlarmWindow"] border pixel 1
+for_window [class="Thunderbird" instance="Prompt" window_role="alert"] border pixel 1
+for_window [class="Thunderbird" instance="Dialog"] border pixel 1
+for_window [class="Thunderbird" instance="Calendar" window_role="Conflicts"] border pixel 1
+for_window [class="Thunderbird" instance="!\(Mail\)"] border pixel 1
+
 for_window [instance="ncmpcpp"] move to scratchpad
 for_window [class="Zoiper"] floating disable, move scratchpad, scratchpad show
 
@@ -451,8 +459,10 @@ mode "$display" {
 # Lock screen
 bindsym $mod+p exec --no-startup-id blurlock
 
+exec --no-startup-id deadd-notification-center
 #exec_always --no-startup-id xmodmap -e "clear lock" #disable caps lock switch
 #exec_always --no-startup-id xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as escape
+#exec_always --no-startup-id gnome-keyring.sh
 #exec compton -f
 #exec --no-startup-id dropbox start
 #exec --no-startup-id volumeicon
@@ -694,3 +704,39 @@ smart_gaps on
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 smart_borders on
 
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
