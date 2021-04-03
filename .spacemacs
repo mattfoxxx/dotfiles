@@ -64,7 +64,7 @@ This function should only modify configuration layer settings."
      markdown
      multiple-cursors
      nginx
-     treemacs
+     neotree
      (org :variables
           org-enable-reveal-js-support t
           ;;org-re-reveal-root ""
@@ -87,7 +87,7 @@ This function should only modify configuration layer settings."
      ;; spell-checking
      ;; syntax-checking
      ;; version-control
-     treemacs)
+     )
 
 
    ;; List of additional packages that will be installed without being wrapped
